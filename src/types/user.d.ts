@@ -1,44 +1,21 @@
 import { TEducation, TExperience } from './model';
+import { TActivityLevels } from './nutrition';
 
-export type TBasicUserDetails = {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-};
+export type TGender = 'MALE' | 'FEMALE' | 'OTHER';
+export type TUserRole = 'USER' | 'ADMIN';
 
-export type TUserListDetails = {
+export type TUser = {
 	id: string;
+	name: string;
 	email: string;
-	firstName: string;
-	lastName: string;
-};
-
-export type TUserListDetailsForAdmin = {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	role: string;
+	password: string;
+	role: TUserRole;
 	isActive: boolean;
-};
-
-export type TUserPublicDetails = {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	bio: string;
+	gender: TGender;
+	age: number;
+	weight: number;
+	height: number;
+	activityLevel: TActivityLevels;
 	createdAt: Date;
-};
-
-export type TUserPublicDetailsWithExperienceAndExperience = {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	bio: string;
-	createdAt: Date;
-	Educations: TEducation[];
-	Experiences: TExperience[];
+	updatedAt: Date;
 };
