@@ -4,7 +4,7 @@ var assert = require('assert');
 describe('Test undeclared route', () => {
 	describe('GET /not-found', () => {
 		it('should return 404 status code', async () => {
-			const response = await request('http://localhost:3000/nm/v1').get('/not-found').expect(404);
+			const response = await request('http://localhost:3000/ng/v1').get('/not-found').expect(404);
 		});
 	});
 });

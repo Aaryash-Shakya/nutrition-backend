@@ -21,7 +21,7 @@ const options = {
 		},
 		servers: [
 			{
-				url: `http://localhost:${config.port}/nm/v1`,
+				url: `http://localhost:${config.port}/ng/v1`,
 			},
 		],
 	},
