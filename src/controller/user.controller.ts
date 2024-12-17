@@ -50,6 +50,43 @@ async function findUserProfileById(req: any, res: any, next: any) {
 	}
 }
 
+async function updateUserProfile(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to update user profile',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/user/update/:userId',
+		method: 'PUT',
+	});
+
+	try {
+		const userId = req.params.userId;
+		const userObj = await userRepository.findUserById(userId);
+		if (!userObj) {
+			res.statusCode = 404;
+			return res.json(
+				await apiResponse.errorResponse(req, res, {
+					message: 'User not found',
+				})
+			);
+		}
+		const updatedUser = await userRepository.updateUserProfile(
+			userId,
+			req.body
+		);
+		const successResp = await apiResponse.appResponse(res, updatedUser);
+		logger.log.info({
+			message: 'Successfully updated user profile',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	findUserProfileById,
+	updateUserProfile,
 };

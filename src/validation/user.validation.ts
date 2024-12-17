@@ -2,7 +2,7 @@ import { Joi } from 'express-validation';
 
 const userIdInParams = {
 	params: Joi.object({
-		userId: Joi.string().required(),
+		userId: Joi.string().uuid().required(),
 	}),
 };
 
@@ -12,7 +12,22 @@ const findUserByEmail = {
 	}),
 };
 
+const updateUserProfile = {
+	params: Joi.object({
+		userId: Joi.string().uuid().required(),
+	}),
+	body: Joi.object({
+		name: Joi.string().optional(),
+		age: Joi.number().optional(),
+		gender: Joi.string().optional(),
+		weight: Joi.number().optional(),
+		height: Joi.number().optional(),
+		activityLevel: Joi.string().optional(),
+	}).or('name', 'age', 'gender', 'weight', 'height', 'activityLevel'),
+};
+
 export default {
 	userIdInParams,
 	findUserByEmail,
+	updateUserProfile,
 };

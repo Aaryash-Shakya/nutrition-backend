@@ -7,6 +7,16 @@ const router = express.Router();
 
 router
 	.route('/profile/:userId')
-	.get(validate(userValidation.userIdInParams), userController.findUserProfileById);
+	.get(
+		validate(userValidation.userIdInParams),
+		userController.findUserProfileById
+	);
+
+router
+	.route('/update/:userId')
+	.put(
+		validate(userValidation.updateUserProfile),
+		userController.updateUserProfile
+	);
 
 export default router;
