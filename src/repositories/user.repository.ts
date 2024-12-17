@@ -1,6 +1,6 @@
 import db from '../../config/sequelize';
 import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
-import { TUserListDetailsForAdmin } from '../types/user';
+import { TUser } from '../types/user';
 
 const DB: any = db;
 const { User } = DB;
@@ -88,20 +88,12 @@ function findUserPasswordByEmail(email: string) {
 
 async function listAllUsers(paginationParams: TPaginationParams): Promise<{
 	pagination: TPaginationResponse;
-	rows: TUserListDetailsForAdmin[];
+	rows: TUser[];
 }> {
 	const records: {
 		count: number;
-		rows: TUserListDetailsForAdmin[];
+		rows: TUser[];
 	} = await User.findAndCountAll({
-		attributes: [
-			'id',
-			'firstName',
-			'lastName',
-			'email',
-			'role',
-			'isActive',
-		],
 		offset: (paginationParams.page - 1) * paginationParams.limit,
 		limit: paginationParams.limit,
 		order: [[paginationParams.sort_by, paginationParams.sort_order]],
