@@ -2,7 +2,7 @@ import { Joi } from 'express-validation';
 
 const userIdInParams = {
 	params: Joi.object({
-		userId: Joi.string().uuid().required(),
+		userId: Joi.string().required(),
 	}),
 };
 

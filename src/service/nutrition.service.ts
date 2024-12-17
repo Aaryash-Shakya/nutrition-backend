@@ -43,12 +43,12 @@ function calculateCalorieNeeds(
 }
 
 // Belgian mathematician and statistician Adolphe Quetelet
-function calculateBMI(weightKg: number, heightCm: number): string {
+function calculateBMI(weightKg: number, heightCm: number): number {
 	// Convert height from centimeters to meters
 	const heightM = heightCm / 100;
 	// Calculate BMI
 	const bmi = weightKg / (heightM * heightM);
-	return bmi.toFixed(2); // Returns BMI rounded to two decimal places
+	return parseFloat(bmi.toFixed(2)); // Returns BMI rounded to two decimal places
 }
 
 // WHO

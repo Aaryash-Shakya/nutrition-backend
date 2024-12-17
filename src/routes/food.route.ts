@@ -7,9 +7,7 @@ const router = express.Router();
 
 router
 	.route('/food/:foodId')
-	.get(
-		validate(foodValidation.foodIdInParams), 
-	foodController.findFoodById);
+	.get(validate(foodValidation.foodIdInParams), foodController.findFoodById);
 
 router.route('/foods').get(foodController.listFoods);
 

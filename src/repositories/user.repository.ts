@@ -58,17 +58,8 @@ function findActiveUserByEmail(email: string) {
 	});
 }
 
-function findUserById(userId: string) {
+function findUserById(userId: string): Promise<TUser> {
 	return User.findOne({
-		attributes: [
-			'id',
-			'firstName',
-			'lastName',
-			'email',
-			'phone',
-			'role',
-			'bio',
-		],
 		where: {
 			id: userId,
 		},

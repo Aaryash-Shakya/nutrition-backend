@@ -19,3 +19,21 @@ export type TUser = {
 	createdAt: Date;
 	updatedAt: Date;
 };
+
+export type TUserWithStats = {
+	id: string;
+	name: string;
+	email: string;
+	password: string;
+	role: TUserRole;
+	isActive: boolean;
+	gender: TGender;
+	age: number;
+	weight: number;
+	height: number;
+	activityLevel: TActivityLevels;
+	calorie: number;
+	bmi: number;
+	createdAt: Date;
+	updatedAt: Date;
+};
