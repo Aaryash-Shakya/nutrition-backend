@@ -1,10 +1,11 @@
 import { TActivityLevels } from '../types/nutrition';
+import { TGender } from '../types/user';
 
 function calculateCalorieNeeds(
 	weightKg: number,
 	heightCm: number,
 	age: number,
-	gender: 'MALE' | 'FEMALE' | 'OTHER',
+	gender: TGender,
 	activityLevel: TActivityLevels
 ): number {
 	// Calculate Basal Metabolic Rate (BMR) using Mifflin-St Jeor Equation
@@ -22,17 +23,18 @@ function calculateCalorieNeeds(
 	}
 
 	// Not Fixed: This is generally suggested by the WHO
-	const activityMultipliers = {
-		sedentary: 1.2, // Little or no exercise
-		light: 1.375, // Light exercise/sports 1-3 days/week
-		moderate: 1.55, // Moderate exercise/sports 3-5 days/week
-		active: 1.725, // Hard exercise/sports 6-7 days a week
-		veryActive: 1.9, // Very hard exercise/physical job & exercise
+	const activityMultipliers: Record<TActivityLevels, number> = {
+		SEDENTARY: 1.2, // Little or no exercise
+		LIGHTLY_ACTIVE: 1.375, // Light exercise/sports 1-3 days/week
+		MODERATELY_ACTIVE: 1.55, // Moderate exercise/sports 3-5 days/week
+		VERY_ACTIVE: 1.725, // Hard exercise/sports 6-7 days a week
+		SUPER_ACTIVE: 1.9, // Very hard exercise/physical job & exercise
 	};
 
-	// Get the activity multiplier; default to sedentary if not found
+	// Get the activity multiplier; default to light if not found
 	const activityMultiplier =
-		activityMultipliers[activityLevel] || activityMultipliers['sedentary'];
+		activityMultipliers[activityLevel] ||
+		activityMultipliers['LIGHTLY_ACTIVE'];
 
 	// Calculate Total Daily Energy Expenditure (TDEE)
 	const tdee = bmr * activityMultiplier;
