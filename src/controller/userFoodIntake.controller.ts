@@ -101,6 +101,42 @@ async function getDailyIntake(req: any, res: any, next: any) {
 		const recommendedIntake =
 			nutritionService.calculateRecommendedNutrients(userObj.calorieGoal);
 
+		// calculate the difference in intake
+		const differenceInIntake: TFoodRecommendationNutrients = {
+			calories: recommendedIntake.calories - totalIntake.calories,
+			carbohydrate:
+				recommendedIntake.carbohydrate - totalIntake.carbohydrate,
+			total_fat: recommendedIntake.total_fat - totalIntake.total_fat,
+			cholesterol:
+				recommendedIntake.cholesterol - totalIntake.cholesterol,
+			protein: recommendedIntake.protein - totalIntake.protein,
+			fiber: recommendedIntake.fiber - totalIntake.fiber,
+			sugars: recommendedIntake.sugars - totalIntake.sugars,
+			sodium: recommendedIntake.sodium - totalIntake.sodium,
+			vitamin_d: recommendedIntake.vitamin_d - totalIntake.vitamin_d,
+			calcium: recommendedIntake.calcium - totalIntake.calcium,
+			iron: recommendedIntake.iron - totalIntake.iron,
+			caffeine: recommendedIntake.caffeine - totalIntake.caffeine,
+		};
+
+		const vectorEmbeddings: number[] = [];
+		Object.keys(differenceInIntake).forEach((key) => {
+			const current =
+				totalIntake[key as keyof TFoodRecommendationNutrients];
+			const target =
+				recommendedIntake[key as keyof TFoodRecommendationNutrients];
+			const embedding = nutritionService.calculateEmbeddings(
+				current,
+				target
+			);
+			vectorEmbeddings.push(embedding);
+		});
+
+		logger.log.info({
+			message: `Vector Embeddings: ${vectorEmbeddings.join(', ')}`,
+			reqId: req.id,
+		});
+
 		const successResp = await apiResponse.appResponse(res, {
 			dailyIntakeObj,
 			totalIntake,
