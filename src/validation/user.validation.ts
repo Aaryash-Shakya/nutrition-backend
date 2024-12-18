@@ -35,8 +35,18 @@ const updateUserProfile = {
 	),
 };
 
+const addFoodIntake = {
+	body: Joi.object({
+		foodId: Joi.string().required(),
+		userId: Joi.string().uuid().required(),
+		quantity: Joi.number().required(),
+		date: Joi.date().required(),
+	}),
+};
+
 export default {
 	userIdInParams,
 	findUserByEmail,
 	updateUserProfile,
+	addFoodIntake,
 };

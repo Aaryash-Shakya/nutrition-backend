@@ -2,6 +2,7 @@ import express from 'express';
 import { validate } from 'express-validation';
 import userValidation from '../validation/user.validation';
 import userController from '../controller/user.controller';
+import userFoodIntakeController from '../controller/userFoodIntake.controller';
 
 const router = express.Router();
 
@@ -17,6 +18,14 @@ router
 	.put(
 		validate(userValidation.updateUserProfile),
 		userController.updateUserProfile
+	);
+
+// Track food Intake
+router
+	.route('/track')
+	.post(
+		validate(userValidation.addFoodIntake),
+		userFoodIntakeController.addFoodIntake
 	);
 
 export default router;
