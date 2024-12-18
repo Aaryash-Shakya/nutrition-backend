@@ -53,7 +53,16 @@ function getDailyIntake(date: string): Promise<TUserFoodIntakeWithFood[]> {
 	});
 }
 
+function deleteIntake(id: string): Promise<number> {
+	return UserFoodIntake.destroy({
+		where: {
+			id,
+		},
+	});
+}
+
 export default {
 	createIntake,
 	getDailyIntake,
+	deleteIntake,
 };

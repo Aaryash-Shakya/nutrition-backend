@@ -117,7 +117,32 @@ async function getDailyIntake(req: any, res: any, next: any) {
 	}
 }
 
+async function deleteFoodIntake(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside userFoodIntake controller to delete food intake',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/user/track/daily-intake/:intakeId',
+		method: 'DELETE',
+	});
+
+	try {
+		const intakeId = req.params.intakeId;
+		const response = await userFoodIntakeRepository.deleteIntake(intakeId);
+		const successResp = await apiResponse.appResponse(res, response);
+		logger.log.info({
+			message: 'Successfully deleted food intake',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	addFoodIntake,
 	getDailyIntake,
+	deleteFoodIntake,
 };

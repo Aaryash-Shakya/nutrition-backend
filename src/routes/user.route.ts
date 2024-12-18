@@ -3,6 +3,7 @@ import { validate } from 'express-validation';
 import userValidation from '../validation/user.validation';
 import userController from '../controller/user.controller';
 import userFoodIntakeController from '../controller/userFoodIntake.controller';
+import userFoodIntakeValidation from '../validation/userFoodIntake.validation';
 
 const router = express.Router();
 
@@ -33,6 +34,13 @@ router
 	.post(
 		validate(userValidation.getDailyIntake),
 		userFoodIntakeController.getDailyIntake
+	);
+
+router
+	.route('/track/daily-intake/:intakeId')
+	.delete(
+		validate(userFoodIntakeValidation.userFoodIntakeIdInParams),
+		userFoodIntakeController.deleteFoodIntake
 	);
 
 export default router;
