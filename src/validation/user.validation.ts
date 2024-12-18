@@ -44,9 +44,16 @@ const addFoodIntake = {
 	}),
 };
 
+const getDailyIntake = {
+	params: Joi.object({
+		date: Joi.string().required(),
+	}),
+};
+
 export default {
 	userIdInParams,
 	findUserByEmail,
 	updateUserProfile,
 	addFoodIntake,
+	getDailyIntake,
 };

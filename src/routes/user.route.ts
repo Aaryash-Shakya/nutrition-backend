@@ -28,4 +28,11 @@ router
 		userFoodIntakeController.addFoodIntake
 	);
 
+router
+	.route('/track/daily-intake/:date')
+	.get(
+		validate(userValidation.getDailyIntake),
+		userFoodIntakeController.getDailyIntake
+	);
+
 export default router;
