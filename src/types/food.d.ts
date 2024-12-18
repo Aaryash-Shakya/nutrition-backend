@@ -44,3 +44,17 @@ export type TFood = {
 	water: number;
 };
 
+export type TFoodRecommendationNutrients = {
+	carbohydrate: number;
+	total_fat: number;
+	cholesterol: number;
+	protein: number;
+	fiber: number;
+	sugars: number;
+	sodium: number;
+	vitamin_d: number;
+	calcium: number;
+	iron: number;
+	caffeine: number;
+};
+

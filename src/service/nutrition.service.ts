@@ -1,3 +1,4 @@
+import { TFood, TFoodRecommendationNutrients } from '../types/food';
 import { TActivityLevels } from '../types/nutrition';
 import { TGender } from '../types/user';
 
@@ -72,5 +73,39 @@ function getBMICategory(bmi: number): string {
 	}
 }
 
-export default { calculateCalorieNeeds, calculateBMI, getBMICategory };
+function calculateRecommendedNutrients(
+	calorie: number
+): TFoodRecommendationNutrients {
+	const nutrientsRdi: TFoodRecommendationNutrients = {
+		carbohydrate: 275,
+		total_fat: 78,
+		cholesterol: 0.3,
+		protein: 50,
+		fiber: 28,
+		sugars: 50,
+		sodium: 2.3,
+		vitamin_d: 0.00002,
+		calcium: 1.3,
+		iron: 0.018,
+		caffeine: 0.4,
+	};
+
+	// scaled RDi = RDI * C/2000
+	const scaledNutrients = Object.keys(nutrientsRdi).reduce((acc, key) => {
+		acc[key] =
+			(nutrientsRdi[key as keyof TFoodRecommendationNutrients] *
+				calorie) /
+			2000;
+		return acc;
+	}, {} as any);
+
+	return scaledNutrients;
+}
+
+export default {
+	calculateCalorieNeeds,
+	calculateBMI,
+	getBMICategory,
+	calculateRecommendedNutrients,
+};
 

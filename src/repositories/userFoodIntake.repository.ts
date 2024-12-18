@@ -16,9 +16,7 @@ function createIntake(data: {
 function getDailyIntake(date: string) {
 	const startDate = new Date(date);
 	const endDate = new Date(startDate);
-	console.log('startDate', startDate);
 	endDate.setDate(startDate.getDate() + 1);
-	console.log('endDate', endDate);
 	return UserFoodIntake.findAll({
 		where: {
 			date: {
