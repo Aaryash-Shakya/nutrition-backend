@@ -6,6 +6,8 @@ import { TFoodRecommendationNutrients } from '../types/food';
 import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import userRepository from '../repositories/user.repository';
+import foodRepository from '../repositories/food.repository';
+import { queryVectors } from '../service/pinecone.service';
 
 async function addFoodIntake(req: any, res: any, next: any) {
 	logger.log.info({
@@ -136,6 +138,18 @@ async function getDailyIntake(req: any, res: any, next: any) {
 			message: `Vector Embeddings: ${vectorEmbeddings.join(', ')}`,
 			reqId: req.id,
 		});
+
+		// query and get food
+		const queryResponse = await queryVectors(vectorEmbeddings);
+		console.log(queryResponse);
+		const responseData = [];
+
+		// const tasks = queryResponse.matches.slice(0, 5).map(async (match) => {
+		// 	const foodId = parseInt(match.id);
+		// 	const food = await foodRepository.findFoodById(foodId);
+		// 	responseData.push({ ...food, score: match.score });
+		// 	return 1;
+		// });
 
 		const successResp = await apiResponse.appResponse(res, {
 			dailyIntakeObj,

@@ -11,6 +11,7 @@ const config = {
 	gmailUserEmail: process.env.GMAIL_USER_EMAIL,
 	gmailUserPassword: process.env.GMAIL_USER_PASS,
 	frontEndUrl: process.env.FRONTEND_URL,
+	pineConeApiKey: process.env.PINECONE_API_KEY,
 	postgres: {
 		db: process.env.PG_DB,
 		port: process.env.PG_PORT,
@@ -30,3 +31,4 @@ const config = {
 };
 
 module.exports = config;
+
