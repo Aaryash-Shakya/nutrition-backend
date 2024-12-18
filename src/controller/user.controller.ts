@@ -80,10 +80,10 @@ async function updateUserProfile(req: any, res: any, next: any) {
 			updatedUserObj.gender,
 			updatedUserObj.activityLevel
 		);
-		await userRepository.updateUserProfile(userId, {
+		const updatedCalorie = await userRepository.updateUserProfile(userId, {
 			calorieGoal: calorie,
 		});
-		const successResp = await apiResponse.appResponse(res, updatedUserObj);
+		const successResp = await apiResponse.appResponse(res, updatedCalorie);
 		logger.log.info({
 			message: 'Successfully updated user profile',
 			reqId: req.id,

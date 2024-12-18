@@ -5,11 +5,11 @@ import { TUser } from '../types/user';
 const DB: any = db;
 const { User } = DB;
 
-function createNewUser(data: any) {
+function createNewUser(data: any): Promise<TUser> {
 	return User.create(data);
 }
 
-function activateAccount(userId: string) {
+function activateAccount(userId: string): Promise<number[]> {
 	return User.update(
 		{ isActive: true },
 		{
@@ -61,7 +61,10 @@ async function listAllUsers(paginationParams: TPaginationParams): Promise<{
 	};
 }
 
-async function updateUserPassword(userId: string, password: string) {
+async function updateUserPassword(
+	userId: string,
+	password: string
+): Promise<number[]> {
 	const user = await User.findOne({
 		where: {
 			id: userId,
