@@ -31,16 +31,6 @@ function findUserById(userId: string): Promise<TUser> {
 // security risk if this api is exposed to public
 function findUserByEmail(email: string) {
 	return User.findOne({
-		attributes: [
-			'id',
-			'firstName',
-			'lastName',
-			'email',
-			'phone',
-			'role',
-			'password',
-			'isActive',
-		],
 		where: {
 			email,
 		},

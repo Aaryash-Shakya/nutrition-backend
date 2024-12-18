@@ -52,7 +52,7 @@ async function registerUser(req: any, res: any, next: any) {
 		mailTemplates.sendEmailVerificationEmail(
 			userRes.email,
 			tokenData.value,
-			userRes.firstName + ' ' + userRes.lastName
+			userRes.name
 		);
 
 		const successResp = await successResponse.appResponse(res, userRes);
@@ -202,7 +202,7 @@ async function resendVerificationEmail(req: any, res: any, next: any) {
 			mailTemplates.sendEmailVerificationEmail(
 				userObj.email,
 				newToken.value,
-				userObj.firstName + ' ' + userObj.lastName
+				userObj.name
 			);
 			const successResp = await successResponse.appResponse(res, {
 				message: 'Email verification resent successfully',
@@ -264,18 +264,15 @@ async function userLogin(req: any, res: any, next: any) {
 			const claims = {
 				iss: userObj.id,
 				exp: Math.floor(Date.now() / 1000) + expiryInSeconds,
+				name: userObj.name,
 				email: userObj.email,
-				firstName: userObj.firstName,
-				lastName: userObj.lastName,
 				role: userObj.role,
 			};
 			const jwtToken = jwt.sign(claims, secret);
 			const userToken = {
 				id: userObj.id,
-				firstName: userObj.firstName,
-				lastName: userObj.lastName,
+				name: userObj.name,
 				email: userObj.email,
-				phone: userObj.phone,
 				role: userObj.role,
 				token: jwtToken,
 			};
@@ -301,7 +298,7 @@ async function userLogin(req: any, res: any, next: any) {
 }
 
 async function verifyJwt(req: any, res: any, next: any) {
-	const { email, role, auth, businessId, businessRole } = req;
+	const { email, role, auth } = req;
 	logger.log.info({
 		message: 'Inside auth controller to verify jwt token',
 		reqId: req.id,
@@ -315,10 +312,6 @@ async function verifyJwt(req: any, res: any, next: any) {
 			email,
 			role,
 		};
-		if (businessId && businessRole) {
-			userToken.businessId = businessId;
-			userToken.businessRole = businessRole;
-		}
 		const successResp = await successResponse.appResponse(res, userToken);
 		logger.log.info({
 			message: 'Successfully verified jwt token',
@@ -371,7 +364,7 @@ async function forgotPassword(req: any, res: any, next: any) {
 		mailTemplates.sendForgotPasswordEmail(
 			userObj.email,
 			tokenData.value,
-			userObj.firstName + ' ' + userObj.lastName
+			userObj.name
 		);
 
 		const successResp = await successResponse.appResponse(res, {

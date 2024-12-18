@@ -42,10 +42,7 @@ export async function checkAuthHeader(req: any, res: any, next: any) {
 				req.email = decoded.email;
 				req.role = decoded.role;
 				req.auth = decoded.iss;
-				req.firstName = decoded.firstName;
-				req.lastName = decoded.lastName;
-				req.businessId = decoded.businessId;
-				req.businessRole = decoded.businessRole;
+				req.name = decoded.name;
 				return next();
 			}
 			const jwtError = {
