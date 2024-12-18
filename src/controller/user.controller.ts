@@ -70,11 +70,20 @@ async function updateUserProfile(req: any, res: any, next: any) {
 				})
 			);
 		}
-		const updatedUser = await userRepository.updateUserProfile(
-			userId,
-			req.body
+		await userRepository.updateUserProfile(userId, req.body);
+
+		const updatedUserObj = await userRepository.findUserById(userId);
+		const calorie = nutritionService.calculateCalorieNeeds(
+			updatedUserObj.weight,
+			updatedUserObj.height,
+			updatedUserObj.age,
+			updatedUserObj.gender,
+			updatedUserObj.activityLevel
 		);
-		const successResp = await apiResponse.appResponse(res, updatedUser);
+		await userRepository.updateUserProfile(userId, {
+			calorieGoal: calorie,
+		});
+		const successResp = await apiResponse.appResponse(res, updatedUserObj);
 		logger.log.info({
 			message: 'Successfully updated user profile',
 			reqId: req.id,
