@@ -91,6 +91,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
 		ash!: number;
 		caffeine!: number;
 		water!: number;
+
+		static associate(models: any) {
+			Food.hasMany(models.UserFoodIntake, {
+				foreignKey: 'foodId',
+			});
+		}
 	}
 	Food.init(
 		{

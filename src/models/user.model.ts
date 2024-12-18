@@ -35,6 +35,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
 			User.hasMany(models.Token, {
 				foreignKey: 'userId',
 			});
+			User.hasMany(models.UserFoodIntake, {
+				foreignKey: 'userId',
+			});
 		}
 	}
 	User.init(
