@@ -1,9 +1,12 @@
 import { Op } from 'sequelize';
 import db from '../../config/sequelize';
-import { TUserFoodIntake } from '../types/userFoodIntake';
+import {
+	TUserFoodIntake,
+	TUserFoodIntakeWithFood,
+} from '../types/userFoodIntake';
 
 const DB: any = db;
-const { UserFoodIntake } = DB;
+const { UserFoodIntake, Food } = DB;
 
 function createIntake(data: {
 	userId: string;
@@ -14,7 +17,7 @@ function createIntake(data: {
 	return UserFoodIntake.create(data);
 }
 
-function getDailyIntake(date: string): Promise<TUserFoodIntake[]> {
+function getDailyIntake(date: string): Promise<TUserFoodIntakeWithFood[]> {
 	const startDate = new Date(date);
 	const endDate = new Date(startDate);
 	endDate.setDate(startDate.getDate() + 1);
@@ -25,6 +28,28 @@ function getDailyIntake(date: string): Promise<TUserFoodIntake[]> {
 				[Op.lt]: endDate,
 			},
 		},
+		include: [
+			{
+				model: Food,
+				attributes: [
+					'id',
+					'name',
+					'serving_size',
+					'calories',
+					'carbohydrate',
+					'total_fat',
+					'cholesterol',
+					'protein',
+					'fiber',
+					'sugars',
+					'sodium',
+					'vitamin_d',
+					'calcium',
+					'iron',
+					'caffeine',
+				],
+			},
+		],
 	});
 }
 

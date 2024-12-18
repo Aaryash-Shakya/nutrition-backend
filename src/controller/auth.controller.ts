@@ -35,9 +35,6 @@ async function registerUser(req: any, res: any, next: any) {
 		}
 
 		const userRes = await userRepository.createNewUser(data);
-		userRes.password = null;
-		userRes.phone = null;
-		userRes.role = null;
 
 		// generate verification token
 		const tokenData = {

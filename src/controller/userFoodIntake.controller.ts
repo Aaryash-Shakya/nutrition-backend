@@ -1,6 +1,11 @@
+import { parse, stringify } from 'flatted';
 import apiResponse from '../helpers/api-response';
 import logger from '../logger';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
+import { TFoodRecommendationNutrients } from '../types/food';
+import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
+import nutritionService from '../service/nutrition.service';
+import userRepository from '../repositories/user.repository';
 
 async function addFoodIntake(req: any, res: any, next: any) {
 	logger.log.info({
@@ -12,9 +17,13 @@ async function addFoodIntake(req: any, res: any, next: any) {
 	});
 
 	try {
-		const foodIntake = await userFoodIntakeRepository.createIntake(
-			req.body
-		);
+		const { userId, foodId, quantity, date } = req.body;
+		const foodIntake = await userFoodIntakeRepository.createIntake({
+			userId,
+			foodId,
+			quantity: quantity / 100, // convert to 100g
+			date,
+		});
 		const successResp = await apiResponse.appResponse(res, foodIntake);
 		logger.log.info({
 			message: 'Successfully added food intake',
@@ -37,12 +46,66 @@ async function getDailyIntake(req: any, res: any, next: any) {
 	});
 
 	try {
+		const userId = req.body.userId;
+		const userObj = await userRepository.findUserById(userId);
 		// before "2024-12-18T04:17:21.903Z"
 		// after "2024-12-18"
 		const dateString = req.params.date.slice(0, 10);
-		const dailyIntake =
+		const dailyIntakeObj =
 			await userFoodIntakeRepository.getDailyIntake(dateString);
-		const successResp = await apiResponse.appResponse(res, dailyIntake);
+
+		// calculate the total intake for the day
+		let totalIntake: TFoodRecommendationNutrients = {
+			calories: 0,
+			carbohydrate: 0,
+			total_fat: 0,
+			cholesterol: 0,
+			protein: 0,
+			fiber: 0,
+			sugars: 0,
+			sodium: 0,
+			vitamin_d: 0,
+			calcium: 0,
+			iron: 0,
+			caffeine: 0,
+		};
+		const flattedDailyIntakeObj: TUserFoodIntakeWithFood[] = parse(
+			stringify(dailyIntakeObj)
+		);
+		flattedDailyIntakeObj.forEach((intake) => {
+			totalIntake.calories +=
+				parseFloat(intake.Food.calories) * intake.quantity;
+			totalIntake.carbohydrate +=
+				parseFloat(intake.Food.carbohydrate) * intake.quantity;
+			totalIntake.total_fat +=
+				parseFloat(intake.Food.total_fat) * intake.quantity;
+			totalIntake.cholesterol +=
+				parseFloat(intake.Food.cholesterol) * intake.quantity;
+			totalIntake.protein +=
+				parseFloat(intake.Food.protein) * intake.quantity;
+			totalIntake.fiber +=
+				parseFloat(intake.Food.fiber) * intake.quantity;
+			totalIntake.sugars +=
+				parseFloat(intake.Food.sugars) * intake.quantity;
+			totalIntake.sodium +=
+				parseFloat(intake.Food.sodium) * intake.quantity;
+			totalIntake.vitamin_d +=
+				parseFloat(intake.Food.vitamin_d) * intake.quantity;
+			totalIntake.calcium +=
+				parseFloat(intake.Food.calcium) * intake.quantity;
+			totalIntake.iron += parseFloat(intake.Food.iron) * intake.quantity;
+			totalIntake.caffeine +=
+				parseFloat(intake.Food.caffeine) * intake.quantity;
+		});
+
+		const recommendedIntake =
+			nutritionService.calculateRecommendedNutrients(userObj.calorieGoal);
+
+		const successResp = await apiResponse.appResponse(res, {
+			dailyIntakeObj,
+			totalIntake,
+			recommendedIntake,
+		});
 		logger.log.info({
 			message: 'Successfully fetched daily intake',
 			reqId: req.id,

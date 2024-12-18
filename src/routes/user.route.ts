@@ -30,7 +30,7 @@ router
 
 router
 	.route('/track/daily-intake/:date')
-	.get(
+	.post(
 		validate(userValidation.getDailyIntake),
 		userFoodIntakeController.getDailyIntake
 	);

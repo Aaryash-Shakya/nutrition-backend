@@ -48,6 +48,9 @@ const getDailyIntake = {
 	params: Joi.object({
 		date: Joi.string().required(),
 	}),
+	body: Joi.object({
+		userId: Joi.string().uuid().required(),
+	}),
 };
 
 export default {

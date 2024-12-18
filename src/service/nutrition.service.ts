@@ -77,6 +77,7 @@ function calculateRecommendedNutrients(
 	calorie: number
 ): TFoodRecommendationNutrients {
 	const nutrientsRdi: TFoodRecommendationNutrients = {
+		calories: 2000,
 		carbohydrate: 275,
 		total_fat: 78,
 		cholesterol: 0.3,
