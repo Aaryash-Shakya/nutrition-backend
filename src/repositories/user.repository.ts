@@ -83,6 +83,7 @@ function updateUserProfile(
 		weight?: number;
 		height?: number;
 		activityLevel?: string;
+		calorieGoal?: number;
 	}
 ): Promise<number[]> {
 	return User.update(data, {
