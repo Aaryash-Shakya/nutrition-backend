@@ -5,7 +5,7 @@ import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
 const DB: any = db;
 const { Food } = DB;
 
-function findFoodById(foodId: string): Promise<TFood> {
+function findFoodById(foodId: string | number): Promise<TFood> {
 	return Food.findByPk(foodId);
 }
 

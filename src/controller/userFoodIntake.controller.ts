@@ -2,7 +2,7 @@ import { parse, stringify } from 'flatted';
 import apiResponse from '../helpers/api-response';
 import logger from '../logger';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
-import { TFoodRecommendationNutrients } from '../types/food';
+import { TFood, TFoodRecommendationNutrients } from '../types/food';
 import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import userRepository from '../repositories/user.repository';
@@ -141,20 +141,24 @@ async function getDailyIntake(req: any, res: any, next: any) {
 
 		// query and get food
 		const queryResponse = await queryVectors(vectorEmbeddings);
-		console.log(queryResponse);
-		const responseData = [];
+		// console.log(queryResponse);
+		const responseData: {
+			food: TFood;
+			score: number | undefined;
+		}[] = [];
 
-		// const tasks = queryResponse.matches.slice(0, 5).map(async (match) => {
-		// 	const foodId = parseInt(match.id);
-		// 	const food = await foodRepository.findFoodById(foodId);
-		// 	responseData.push({ ...food, score: match.score });
-		// 	return 1;
-		// });
+		const tasks = queryResponse.matches.slice(0, 5).map(async (match) => {
+			const foodId = parseInt(match.id);
+			const food = await foodRepository.findFoodById(foodId);
+			responseData.push({ food, score: match.score });
+		});
+		await Promise.all(tasks);
 
 		const successResp = await apiResponse.appResponse(res, {
 			dailyIntakeObj,
 			totalIntake,
 			recommendedIntake,
+			recommendation: responseData,
 		});
 		logger.log.info({
 			message: 'Successfully fetched daily intake',
