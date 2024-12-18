@@ -23,7 +23,16 @@ const updateUserProfile = {
 		weight: Joi.number().optional(),
 		height: Joi.number().optional(),
 		activityLevel: Joi.string().optional(),
-	}).or('name', 'age', 'gender', 'weight', 'height', 'activityLevel'),
+		calorieGoal: Joi.number().optional(),
+	}).or(
+		'name',
+		'age',
+		'gender',
+		'weight',
+		'height',
+		'activityLevel',
+		'calorieGoal'
+	),
 };
 
 export default {

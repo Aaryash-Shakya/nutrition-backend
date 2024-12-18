@@ -13,6 +13,7 @@ interface UserAttributes {
 	weight: number;
 	height: number;
 	activityLevel: string;
+	calorieGoal: number;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -28,6 +29,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
 		weight!: number;
 		height!: number;
 		activityLevel!: string;
+		calorieGoal!: number;
 
 		static associate(models: any) {
 			User.hasMany(models.Token, {
@@ -95,6 +97,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
 					'SUPER_ACTIVE'
 				),
 				defaultValue: 'LIGHTLY_ACTIVE',
+				allowNull: false,
+			},
+			calorieGoal: {
+				type: DataTypes.INTEGER,
+				defaultValue: 2000,
 				allowNull: false,
 			},
 		},
