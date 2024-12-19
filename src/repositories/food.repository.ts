@@ -17,14 +17,14 @@ async function listFoods(paginationParams: TPaginationParams): Promise<{
 		count: number;
 		rows: TFood[];
 	} = await Food.findAndCountAll({
-		offset: (paginationParams.page - 1) * paginationParams.limit,
-		limit: paginationParams.limit,
+		offset: (paginationParams.page - 1) * 100,
+		limit: 100,
 		order: [[paginationParams.sort_by, paginationParams.sort_order]],
 	});
 	const pagination = {
 		currentPage: paginationParams.page,
-		pageSize: paginationParams.limit,
-		totalPages: Math.ceil(records.count / paginationParams.limit),
+		pageSize: 100,
+		totalPages: Math.ceil(records.count / 100),
 		totalRecords: records.count,
 	};
 	return {
