@@ -35,15 +35,6 @@ const updateUserProfile = {
 	),
 };
 
-const addFoodIntake = {
-	body: Joi.object({
-		foodId: Joi.string().required(),
-		userId: Joi.string().uuid().required(),
-		quantity: Joi.number().required(),
-		date: Joi.date().required(),
-	}),
-};
-
 const getDailyIntake = {
 	params: Joi.object({
 		date: Joi.string().required(),
@@ -57,6 +48,5 @@ export default {
 	userIdInParams,
 	findUserByEmail,
 	updateUserProfile,
-	addFoodIntake,
 	getDailyIntake,
 };

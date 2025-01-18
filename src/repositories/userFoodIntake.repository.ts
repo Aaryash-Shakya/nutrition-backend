@@ -12,6 +12,7 @@ function createIntake(data: {
 	userId: string;
 	foodId: string;
 	quantity: number;
+	mealType: string;
 	date: Date;
 }): Promise<TUserFoodIntake> {
 	return UserFoodIntake.create(data);
@@ -50,6 +51,7 @@ function getDailyIntake(date: string): Promise<TUserFoodIntakeWithFood[]> {
 				],
 			},
 		],
+		order: [['date', 'ASC']],
 	});
 }
 

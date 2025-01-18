@@ -5,6 +5,7 @@ export type TUserFoodIntake = {
 	userId: string;
 	foodId: string;
 	quantity: number;
+	mealType: 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
 	date: Date;
 	createdAt: Date;
 	updatedAt: Date;

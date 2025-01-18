@@ -25,7 +25,7 @@ router
 router
 	.route('/track')
 	.post(
-		validate(userValidation.addFoodIntake),
+		validate(userFoodIntakeValidation.createUserFoodIntake),
 		userFoodIntakeController.addFoodIntake
 	);
 

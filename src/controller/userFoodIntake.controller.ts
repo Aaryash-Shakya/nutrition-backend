@@ -19,11 +19,12 @@ async function addFoodIntake(req: any, res: any, next: any) {
 	});
 
 	try {
-		const { userId, foodId, quantity, date } = req.body;
+		const { userId, foodId, quantity, date, mealType } = req.body;
 		const foodIntake = await userFoodIntakeRepository.createIntake({
 			userId,
 			foodId,
 			quantity: quantity / 100, // convert to 100g
+			mealType,
 			date,
 		});
 		const successResp = await apiResponse.appResponse(res, foodIntake);

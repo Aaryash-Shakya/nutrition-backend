@@ -13,8 +13,16 @@ const tokenType = {
 	PASSWORD_RESET: 'PASSWORD_RESET',
 };
 
+const mealType = {
+	BREAKFAST: 'BREAKFAST',
+	LUNCH: 'LUNCH',
+	SNACK: 'SNACK',
+	DINNER: 'DINNER',
+};
+
 export default {
 	userRole,
 	userStatus,
 	tokenType,
+	mealType,
 };
