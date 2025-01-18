@@ -42,11 +42,11 @@ const limiter = rateLimit({
 	max: 100, // limit each IP to 100 requests per windowMs
 });
 
-app.use('/nm/v1', routes);
+app.use('/ng/v1', routes);
 
-app.use('/nm/v1/public', limiter);
+app.use('/ng/v1/public', limiter);
 
-// app.use('/nm/v1/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+// app.use('/ng/v1/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
 	next(new createHttpError.NotFound());

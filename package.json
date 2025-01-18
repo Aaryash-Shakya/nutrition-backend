@@ -47,6 +47,7 @@
 	},
 	"dependencies": {
 		"@handlebars/allow-prototype-access": "^1.0.5",
+		"@pinecone-database/pinecone": "^4.0.0",
 		"@types/express-request-id": "^1.4.3",
 		"@types/node-cron": "^3.0.11",
 		"@types/node-fetch": "^2.6.2",

@@ -12,6 +12,8 @@ const paginationParamsSchema = Joi.object({
 }).unknown(true);
 
 function getPaginationParams(query: any): TPaginationParams {
+	query.page = parseInt(query.page);
+	query.limit = parseInt(query.limit);
 	const { value, error } = paginationParamsSchema.validate(query);
 
 	if (query.sort_order === 'asc') query.sort_order = 'ASC';

@@ -2,11 +2,9 @@ import { Joi } from 'express-validation';
 
 const registerUser = {
 	body: Joi.object({
-		firstName: Joi.string().required(),
-		lastName: Joi.string().required(),
+		name: Joi.string().required(),
 		email: Joi.string().email().required(),
 		password: Joi.string().required(),
-		phone: Joi.string().required(),
 	}),
 };
 

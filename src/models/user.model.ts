@@ -3,30 +3,39 @@ import pwdHashService from '../service/pwd-hash.service';
 
 interface UserAttributes {
 	id: string;
-	firstName: string;
-	lastName: string;
+	name: string;
 	email: string;
 	password: string;
-	phone: string;
-	bio?: string;
 	role: string;
 	isActive: boolean;
+	gender: string;
+	age: number;
+	weight: number;
+	height: number;
+	activityLevel: string;
+	calorieGoal: number;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes> implements UserAttributes {
 		id!: string;
-		firstName!: string;
-		lastName!: string;
+		name!: string;
 		email!: string;
 		password!: string;
-		phone!: string;
-		bio?: string;
 		role!: string;
 		isActive!: boolean;
+		gender!: string;
+		age!: number;
+		weight!: number;
+		height!: number;
+		activityLevel!: string;
+		calorieGoal!: number;
 
 		static associate(models: any) {
 			User.hasMany(models.Token, {
+				foreignKey: 'userId',
+			});
+			User.hasMany(models.UserFoodIntake, {
 				foreignKey: 'userId',
 			});
 		}
@@ -39,11 +48,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
 				primaryKey: true,
 				defaultValue: DataTypes.UUIDV4,
 			},
-			firstName: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			lastName: {
+			name: {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
@@ -56,16 +61,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
-			phone: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			bio: {
-				type: DataTypes.STRING,
-				allowNull: true,
-			},
 			role: {
-				type: DataTypes.ENUM('USER', 'SUPERADMIN'),
+				type: DataTypes.ENUM('ADMIN', 'USER'),
 				defaultValue: 'USER',
 				allowNull: false,
 			},
@@ -73,6 +70,42 @@ module.exports = (sequelize: any, DataTypes: any) => {
 				type: DataTypes.BOOLEAN,
 				allowNull: false,
 				defaultValue: true,
+			},
+			gender: {
+				type: DataTypes.ENUM('MALE', 'FEMALE', 'OTHER'),
+				defaultValue: 'MALE',
+				allowNull: false,
+			},
+			age: {
+				type: DataTypes.INTEGER,
+				defaultValue: 21,
+				allowNull: false,
+			},
+			weight: {
+				type: DataTypes.FLOAT,
+				defaultValue: 60,
+				allowNull: false,
+			},
+			height: {
+				type: DataTypes.FLOAT,
+				defaultValue: 180,
+				allowNull: false,
+			},
+			activityLevel: {
+				type: DataTypes.ENUM(
+					'SEDENTARY',
+					'LIGHTLY_ACTIVE',
+					'MODERATELY_ACTIVE',
+					'VERY_ACTIVE',
+					'SUPER_ACTIVE'
+				),
+				defaultValue: 'LIGHTLY_ACTIVE',
+				allowNull: false,
+			},
+			calorieGoal: {
+				type: DataTypes.INTEGER,
+				defaultValue: 2000,
+				allowNull: false,
 			},
 		},
 		{
