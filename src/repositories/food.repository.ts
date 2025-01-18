@@ -1,3 +1,4 @@
+import { literal } from 'sequelize';
 import db from '../../config/sequelize';
 import { TFood } from '../types/food';
 import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
@@ -9,6 +10,15 @@ function findFoodById(foodId: string | number): Promise<TFood> {
 	return Food.findByPk(foodId);
 }
 
+function searchFoodByName(foodName: string): Promise<TFood[]> {
+	return Food.findAll({
+		where: literal(
+			`to_tsvector("name") @@ to_tsquery(${db.sequelize.escape(foodName)})`
+		),
+		limit: 10,
+	});
+}
+
 async function listFoods(paginationParams: TPaginationParams): Promise<{
 	pagination: TPaginationResponse;
 	rows: TFood[];
@@ -17,13 +27,13 @@ async function listFoods(paginationParams: TPaginationParams): Promise<{
 		count: number;
 		rows: TFood[];
 	} = await Food.findAndCountAll({
-		offset: (paginationParams.page - 1) * 100,
-		limit: 100,
+		offset: (paginationParams.page - 1) * paginationParams.limit,
+		limit: paginationParams.limit,
 		order: [[paginationParams.sort_by, paginationParams.sort_order]],
 	});
 	const pagination = {
 		currentPage: paginationParams.page,
-		pageSize: 100,
+		pageSize: paginationParams.limit,
 		totalPages: Math.ceil(records.count / 100),
 		totalRecords: records.count,
 	};
@@ -35,5 +45,6 @@ async function listFoods(paginationParams: TPaginationParams): Promise<{
 
 export default {
 	findFoodById,
+	searchFoodByName,
 	listFoods,
 };

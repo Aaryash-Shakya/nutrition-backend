@@ -4,7 +4,7 @@ import { TPaginationParams } from '../types/searchParams';
 // Define the Joi schema
 const paginationParamsSchema = Joi.object({
 	page: Joi.number().integer().min(1).default(1),
-	limit: Joi.number().integer().min(2).max(1000).default(10),
+	limit: Joi.number().integer().min(2).max(100).default(10),
 	sort_by: Joi.string().default('createdAt'),
 	sort_order: Joi.string()
 		.valid('ASC', 'DESC', 'asc', 'desc')
@@ -12,6 +12,8 @@ const paginationParamsSchema = Joi.object({
 }).unknown(true);
 
 function getPaginationParams(query: any): TPaginationParams {
+	query.page = parseInt(query.page);
+	query.limit = parseInt(query.limit);
 	const { value, error } = paginationParamsSchema.validate(query);
 
 	if (query.sort_order === 'asc') query.sort_order = 'ASC';

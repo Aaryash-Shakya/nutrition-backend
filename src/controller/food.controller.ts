@@ -35,6 +35,30 @@ async function findFoodById(req: any, res: any, next: any) {
 	}
 }
 
+async function searchFoodByName(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside food controller to search food by name',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/f/food/search',
+		method: 'GET',
+	});
+
+	try {
+		const foodName = req.query.name;
+		const foodList = await foodRepository.searchFoodByName(foodName);
+		const successResp = await apiResponse.appResponse(res, foodList);
+		logger.log.info({
+			message: 'Successfully fetched food list',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 async function listFoods(req: any, res: any, next: any) {
 	logger.log.info({
 		message: 'Inside food controller to list foods',
@@ -45,7 +69,8 @@ async function listFoods(req: any, res: any, next: any) {
 	});
 
 	try {
-		const paginationParams = searchParams.getPaginationParams(req.params);
+		const paginationParams = searchParams.getPaginationParams(req.query);
+		console.log("paginationParams ==> ", paginationParams);
 		const foodList = await foodRepository.listFoods(paginationParams);
 		const successResp = await apiResponse.appResponse(res, foodList);
 		logger.log.info({
