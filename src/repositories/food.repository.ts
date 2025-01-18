@@ -11,6 +11,8 @@ function findFoodById(foodId: string | number): Promise<TFood> {
 }
 
 function searchFoodByName(foodName: string): Promise<TFood[]> {
+	foodName = foodName.replace(/\s/g, ' & ');
+	// vector query cannot contain space instead use | or & for OR and AND
 	return Food.findAll({
 		where: literal(
 			`to_tsvector("name") @@ to_tsquery(${db.sequelize.escape(foodName)})`

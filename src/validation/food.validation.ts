@@ -6,7 +6,14 @@ const foodIdInParams = {
 	}),
 };
 
+const searchFoodByName = {
+	query: Joi.object({
+		name: Joi.string().required(),
+	}),
+};
+
 export default {
 	foodIdInParams,
+	searchFoodByName,
 };
 

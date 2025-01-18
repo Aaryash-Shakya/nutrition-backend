@@ -11,4 +11,11 @@ router
 
 router.route('/foods').get(foodController.listFoods);
 
+router
+	.route('/search')
+	.get(
+		validate(foodValidation.searchFoodByName),
+		foodController.searchFoodByName
+	);
+
 export default router;

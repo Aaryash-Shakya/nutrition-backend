@@ -86,5 +86,6 @@ async function listFoods(req: any, res: any, next: any) {
 
 export default {
 	findFoodById,
+	searchFoodByName,
 	listFoods,
 };
