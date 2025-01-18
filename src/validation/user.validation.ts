@@ -44,9 +44,17 @@ const getDailyIntake = {
 	}),
 };
 
+const getRecommendation = {
+	body: Joi.object({
+		userId: Joi.string().uuid().required(),
+		date: Joi.string().required(),
+	}),
+};
+
 export default {
 	userIdInParams,
 	findUserByEmail,
 	updateUserProfile,
 	getDailyIntake,
+	getRecommendation,
 };

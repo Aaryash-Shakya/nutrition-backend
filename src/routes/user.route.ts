@@ -4,6 +4,7 @@ import userValidation from '../validation/user.validation';
 import userController from '../controller/user.controller';
 import userFoodIntakeController from '../controller/userFoodIntake.controller';
 import userFoodIntakeValidation from '../validation/userFoodIntake.validation';
+import recommendationController from '../controller/recommendation.controller';
 
 const router = express.Router();
 
@@ -42,5 +43,21 @@ router
 		validate(userFoodIntakeValidation.userFoodIntakeIdInParams),
 		userFoodIntakeController.deleteFoodIntake
 	);
+
+router
+	.route('/track/daily-intake/:intakeId')
+	.delete(
+		validate(userFoodIntakeValidation.userFoodIntakeIdInParams),
+		userFoodIntakeController.deleteFoodIntake
+	);
+
+// Recommendations
+router
+	.route('/recommend/nutrition')
+	.get(
+		validate(userValidation.getRecommendation),
+		recommendationController.recommendationByDeficiency
+	);
+
 
 export default router;
