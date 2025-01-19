@@ -2,7 +2,7 @@ import { parse, stringify } from 'flatted';
 import logger from '../logger';
 import userRepository from '../repositories/user.repository';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
-import { TFood, TFoodMinimal, TFoodRecommendationNutrients } from '../types/food';
+import { TFoodMinimal, TFoodRecommendationNutrients } from '../types/food';
 import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import { queryVectors } from '../service/pinecone.service';
@@ -30,7 +30,7 @@ async function recommendationByDeficiency(req: any, res: any, next: any) {
 			await userFoodIntakeRepository.getDailyIntake(dateString);
 
 		// calculate the total intake for the day
-		let totalIntake: TFoodRecommendationNutrients = {
+		const totalIntake: TFoodRecommendationNutrients = {
 			calories: 0,
 			carbohydrate: 0,
 			total_fat: 0,

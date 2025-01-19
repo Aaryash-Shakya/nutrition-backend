@@ -56,7 +56,7 @@ async function getDailyIntake(req: any, res: any, next: any) {
 			await userFoodIntakeRepository.getDailyIntake(dateString);
 
 		// calculate the total intake for the day
-		let totalIntake: TFoodRecommendationNutrients = {
+		const totalIntake: TFoodRecommendationNutrients = {
 			calories: 0,
 			carbohydrate: 0,
 			total_fat: 0,

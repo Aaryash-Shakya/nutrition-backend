@@ -1,4 +1,4 @@
-import { TFood, TFoodRecommendationNutrients } from '../types/food';
+import { TFoodRecommendationNutrients } from '../types/food';
 import { TActivityLevels } from '../types/nutrition';
 import { TGender } from '../types/user';
 

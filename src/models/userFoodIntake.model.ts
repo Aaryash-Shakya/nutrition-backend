@@ -1,5 +1,4 @@
 import { Model } from 'sequelize';
-import pwdHashService from '../service/pwd-hash.service';
 
 interface UserFoodIntakeAttributes {
 	id: string;

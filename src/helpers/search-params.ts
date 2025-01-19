@@ -49,4 +49,5 @@ function getFilters(
 
 export default {
 	getPaginationParams,
+	getFilters,
 };

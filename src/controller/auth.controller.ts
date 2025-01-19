@@ -304,7 +304,7 @@ async function verifyJwt(req: any, res: any, next: any) {
 		method: 'GET',
 	});
 	try {
-		let userToken: any = {
+		const userToken: any = {
 			id: auth,
 			email,
 			role,
