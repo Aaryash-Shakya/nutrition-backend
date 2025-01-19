@@ -2,12 +2,10 @@ import { parse, stringify } from 'flatted';
 import apiResponse from '../helpers/api-response';
 import logger from '../logger';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
-import { TFood, TFoodRecommendationNutrients } from '../types/food';
+import { TFoodRecommendationNutrients } from '../types/food';
 import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import userRepository from '../repositories/user.repository';
-import foodRepository from '../repositories/food.repository';
-import { queryVectors } from '../service/pinecone.service';
 
 async function addFoodIntake(req: any, res: any, next: any) {
 	logger.log.info({
@@ -23,7 +21,7 @@ async function addFoodIntake(req: any, res: any, next: any) {
 		const foodIntake = await userFoodIntakeRepository.createIntake({
 			userId,
 			foodId,
-			quantity: quantity / 100, // convert to 100g
+			quantity, // convert to 100g
 			mealType,
 			date,
 		});

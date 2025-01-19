@@ -133,27 +133,27 @@ function generateRecommendations(
 	input: number[],
 	associationRules: AssociationRule[]
 ): number[] {
-	const recommendations: number[] = [];
+	const recommendations = new Set<number>();
 
 	associationRules.forEach(({ antecedent, consequent }) => {
 		if (antecedent.every((item) => input.includes(item))) {
 			consequent.forEach((item) => {
 				if (!input.includes(item)) {
-					recommendations.push(item);
+					recommendations.add(item);
 				}
 			});
 		}
 	});
 
-	return recommendations;
+	return Array.from(recommendations);
 }
 
 function aprioriAlgorithm(
 	dateMap: Map<string, number[]>,
 	currentItems: number[]
-): number[] {
+) {
 	const SUPPORT = 10;
-	const CONFIDENCE = 0.5;
+	const CONFIDENCE = 0.75;
 
 	const transactions = convertDateMapToTransactions(dateMap);
 
@@ -164,12 +164,18 @@ function aprioriAlgorithm(
 		CONFIDENCE
 	);
 
+	// there's no duplicates coz we use set in generateRecommendations
 	const recommendations = generateRecommendations(
 		currentItems,
 		associationRules
 	);
 
-	return recommendations;
+	return {
+		transactions,
+		frequentItemsets,
+		associationRules,
+		recommendations,
+	};
 }
 
 export default {

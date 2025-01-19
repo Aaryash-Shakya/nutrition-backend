@@ -78,7 +78,7 @@ async function listFoods(paginationParams: TPaginationParams): Promise<{
 		rows: records.rows,
 	};
 }
-function listFoodsByFoodIds(foodIds: number[]): TFoodMinimal[] {
+function listFoodsByFoodIds(foodIds: number[]): Promise<TFoodMinimal[]> {
 	return Food.findAll({
 		attributes: [
 			'id',

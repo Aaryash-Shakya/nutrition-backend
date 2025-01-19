@@ -200,13 +200,17 @@ async function recommendationByHistory(req: any, res: any, next: any) {
 				})
 			);
 		}
-		const recommendedIds = aprioriService.aprioriAlgorithm(
+		const aprioriResponse = aprioriService.aprioriAlgorithm(
 			dateToFoodIds,
 			todaysIntake
 		);
 
-		const foodObjs = foodRepository.listFoodsByFoodIds(recommendedIds);
+		const foodObjs = await foodRepository.listFoodsByFoodIds(
+			aprioriResponse.recommendations
+		);
 		const successResp = await apiResponse.appResponse(res, {
+			associationRules: aprioriResponse.associationRules,
+			recommendations: aprioriResponse.recommendations,
 			recommendation: foodObjs,
 		});
 		logger.log.info({
