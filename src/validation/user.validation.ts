@@ -45,11 +45,17 @@ const getDailyIntake = {
 };
 
 const getRecommendation = {
-	body: Joi.object({
+	query: Joi.object({
 		userId: Joi.string().uuid().required(),
 		date: Joi.string().required(),
 	}),
 };
+
+const userIdInQuery = {
+	query: Joi.object({
+		userId: Joi.string().uuid().required(),
+	}),
+}
 
 export default {
 	userIdInParams,
@@ -57,4 +63,5 @@ export default {
 	updateUserProfile,
 	getDailyIntake,
 	getRecommendation,
+	userIdInQuery,
 };

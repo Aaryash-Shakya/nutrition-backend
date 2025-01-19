@@ -59,5 +59,11 @@ router
 		recommendationController.recommendationByDeficiency
 	);
 
+router
+	.route('/recommend/history')
+	.get(
+		validate(userValidation.userIdInQuery),
+		recommendationController.recommendationByHistory
+	);
 
 export default router;
