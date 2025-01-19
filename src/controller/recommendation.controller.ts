@@ -2,7 +2,7 @@ import { parse, stringify } from 'flatted';
 import logger from '../logger';
 import userRepository from '../repositories/user.repository';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
-import { TFood, TFoodRecommendationNutrients } from '../types/food';
+import { TFood, TFoodMinimal, TFoodRecommendationNutrients } from '../types/food';
 import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import { queryVectors } from '../service/pinecone.service';
@@ -101,13 +101,13 @@ async function recommendationByDeficiency(req: any, res: any, next: any) {
 		const queryResponse = await queryVectors(vectorEmbeddings);
 		// console.log(queryResponse);
 		const responseData: {
-			food: TFood;
+			food: TFoodMinimal;
 			score: number | undefined;
 		}[] = [];
 
 		const tasks = queryResponse.matches.slice(0, 10).map(async (match) => {
 			const foodId = parseInt(match.id);
-			const food = await foodRepository.findFoodById(foodId);
+			const food = await foodRepository.findMinimalFoodById(foodId);
 			responseData.push({ food, score: match.score });
 		});
 		await Promise.all(tasks);

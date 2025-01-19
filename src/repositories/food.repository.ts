@@ -10,6 +10,24 @@ function findFoodById(foodId: string | number): Promise<TFood> {
 	return Food.findByPk(foodId);
 }
 
+function findMinimalFoodById(foodId: string | number): Promise<TFoodMinimal> {
+	return Food.findByPk(foodId, {
+		attributes: [
+			'id',
+			'name',
+			'serving_size',
+			'calories',
+			'carbohydrate',
+			'total_fat',
+			'cholesterol',
+			'protein',
+			'fiber',
+			'sodium',
+			'calcium',
+		],
+	});
+}
+
 function searchFoodByName(foodName: string): Promise<TFoodMinimal[]> {
 	foodName = foodName.replace(/\s/g, ' & ');
 	// vector query cannot contain space instead use | or & for OR and AND
@@ -24,12 +42,8 @@ function searchFoodByName(foodName: string): Promise<TFoodMinimal[]> {
 			'cholesterol',
 			'protein',
 			'fiber',
-			'sugars',
 			'sodium',
-			'vitamin_d',
 			'calcium',
-			'iron',
-			'caffeine',
 		],
 		where: literal(
 			`to_tsvector("name") @@ to_tsquery(${db.sequelize.escape(foodName)})`
@@ -56,12 +70,8 @@ async function listFoods(paginationParams: TPaginationParams): Promise<{
 			'cholesterol',
 			'protein',
 			'fiber',
-			'sugars',
 			'sodium',
-			'vitamin_d',
 			'calcium',
-			'iron',
-			'caffeine',
 		],
 		offset: (paginationParams.page - 1) * paginationParams.limit,
 		limit: paginationParams.limit,
@@ -90,12 +100,8 @@ function listFoodsByFoodIds(foodIds: number[]): Promise<TFoodMinimal[]> {
 			'cholesterol',
 			'protein',
 			'fiber',
-			'sugars',
 			'sodium',
-			'vitamin_d',
 			'calcium',
-			'iron',
-			'caffeine',
 		],
 		where: {
 			id: {
@@ -107,6 +113,7 @@ function listFoodsByFoodIds(foodIds: number[]): Promise<TFoodMinimal[]> {
 
 export default {
 	findFoodById,
+	findMinimalFoodById,
 	searchFoodByName,
 	listFoods,
 	listFoodsByFoodIds,
