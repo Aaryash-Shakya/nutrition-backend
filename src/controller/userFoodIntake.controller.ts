@@ -17,7 +17,8 @@ async function addFoodIntake(req: any, res: any, next: any) {
 	});
 
 	try {
-		const { userId, foodId, quantity, date, mealType } = req.body;
+		const userId = req.userId;
+		const { foodId, quantity, date, mealType } = req.body;
 		const foodIntake = await userFoodIntakeRepository.createIntake({
 			userId,
 			foodId,
@@ -47,7 +48,7 @@ async function getDailyIntake(req: any, res: any, next: any) {
 	});
 
 	try {
-		const userId = req.body.userId;
+		const userId = req.userId;
 		const userObj = await userRepository.findUserById(userId);
 		// before "2024-12-18T04:17:21.903Z"
 		// after "2024-12-18"

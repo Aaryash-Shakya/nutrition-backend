@@ -21,7 +21,7 @@ async function recommendationByDeficiency(req: any, res: any, next: any) {
 	});
 
 	try {
-		const userId = req.query.userId;
+		const userId = req.userId;
 		const userObj = await userRepository.findUserById(userId);
 		// before "2024-12-18T04:17:21.903Z"
 		// after "2024-12-18"
@@ -137,7 +137,7 @@ async function recommendationByHistory(req: any, res: any, next: any) {
 		method: 'GET',
 	});
 	try {
-		const userId = req.query.userId;
+		const userId = req.userId;
 
 		// here we get a single array of all foods consumed by user in last 30 days
 		const monthlyIntakeObj =

@@ -8,7 +8,6 @@ const userFoodIntakeIdInParams = {
 
 const createUserFoodIntake = {
 	body: Joi.object({
-		userId: Joi.string().uuid().required(),
 		foodId: Joi.string().required(),
 		quantity: Joi.number().required(),
 		date: Joi.date().required(),

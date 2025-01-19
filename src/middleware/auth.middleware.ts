@@ -39,7 +39,7 @@ export async function checkAuthHeader(req: any, res: any, next: any) {
 				}
 			}
 			if (decoded) {
-				req.id = decoded.iss;
+				req.userId = decoded.iss;
 				req.email = decoded.email;
 				req.name = decoded.name;
 				req.role = decoded.role;
