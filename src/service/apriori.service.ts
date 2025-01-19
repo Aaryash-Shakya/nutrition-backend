@@ -145,7 +145,23 @@ function generateRecommendations(
 		}
 	});
 
+	// there's no duplicates coz we use Set
 	return Array.from(recommendations);
+}
+
+function getMatchedAssociationRules(
+	input: number[],
+	associationRules: AssociationRule[]
+): AssociationRule[] {
+	const matchedRules: AssociationRule[] = [];
+
+	associationRules.forEach(({ antecedent, consequent, confidence }) => {
+		if (antecedent.every((item) => input.includes(item))) {
+			matchedRules.push({ antecedent, consequent, confidence });
+		}
+	});
+
+	return matchedRules;
 }
 
 function aprioriAlgorithm(
@@ -164,7 +180,11 @@ function aprioriAlgorithm(
 		CONFIDENCE
 	);
 
-	// there's no duplicates coz we use set in generateRecommendations
+	const matchedRules = getMatchedAssociationRules(
+		currentItems,
+		associationRules
+	);
+
 	const recommendations = generateRecommendations(
 		currentItems,
 		associationRules
@@ -174,6 +194,7 @@ function aprioriAlgorithm(
 		transactions,
 		frequentItemsets,
 		associationRules,
+		matchedRules,
 		recommendations,
 	};
 }

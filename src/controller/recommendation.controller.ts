@@ -187,7 +187,7 @@ async function recommendationByHistory(req: any, res: any, next: any) {
 			}
 		});
 
-		// console.log(dateToFoodIds);\
+		// console.log(dateToFoodIds);
 
 		// get todays foods
 		const today = new Date();
@@ -209,7 +209,8 @@ async function recommendationByHistory(req: any, res: any, next: any) {
 			aprioriResponse.recommendations
 		);
 		const successResp = await apiResponse.appResponse(res, {
-			associationRules: aprioriResponse.associationRules,
+			// associationRules: aprioriResponse.associationRules,
+			matchedRules: aprioriResponse.matchedRules,
 			recommendations: aprioriResponse.recommendations,
 			recommendation: foodObjs,
 		});
