@@ -83,12 +83,8 @@ function calculateRecommendedNutrients(
 		cholesterol: 0.3,
 		protein: 50,
 		fiber: 28,
-		sugars: 50,
 		sodium: 2.3,
-		vitamin_d: 0.00002,
 		calcium: 1.3,
-		iron: 0.018,
-		caffeine: 0.4,
 	};
 
 	// scaled RDi = RDI * C/2000

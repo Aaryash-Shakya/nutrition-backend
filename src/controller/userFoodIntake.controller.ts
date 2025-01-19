@@ -63,12 +63,8 @@ async function getDailyIntake(req: any, res: any, next: any) {
 			cholesterol: 0,
 			protein: 0,
 			fiber: 0,
-			sugars: 0,
 			sodium: 0,
-			vitamin_d: 0,
 			calcium: 0,
-			iron: 0,
-			caffeine: 0,
 		};
 		const flattedDailyIntakeObj: TUserFoodIntakeWithFood[] = parse(
 			stringify(dailyIntakeObj)
@@ -86,17 +82,10 @@ async function getDailyIntake(req: any, res: any, next: any) {
 				parseFloat(intake.Food.protein) * intake.quantity;
 			totalIntake.fiber +=
 				parseFloat(intake.Food.fiber) * intake.quantity;
-			totalIntake.sugars +=
-				parseFloat(intake.Food.sugars) * intake.quantity;
 			totalIntake.sodium +=
 				parseFloat(intake.Food.sodium) * intake.quantity;
-			totalIntake.vitamin_d +=
-				parseFloat(intake.Food.vitamin_d) * intake.quantity;
 			totalIntake.calcium +=
 				parseFloat(intake.Food.calcium) * intake.quantity;
-			totalIntake.iron += parseFloat(intake.Food.iron) * intake.quantity;
-			totalIntake.caffeine +=
-				parseFloat(intake.Food.caffeine) * intake.quantity;
 		});
 
 		const recommendedIntake =

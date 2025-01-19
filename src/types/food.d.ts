@@ -51,12 +51,8 @@ export type TFoodRecommendationNutrients = {
 	cholesterol: number;
 	protein: number;
 	fiber: number;
-	sugars: number;
 	sodium: number;
-	vitamin_d: number;
 	calcium: number;
-	iron: number;
-	caffeine: number;
 };
 
 export type TFoodMinimal = {
