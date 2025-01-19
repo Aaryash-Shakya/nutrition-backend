@@ -297,7 +297,8 @@ module.exports = {
 		const getMonthlyDiet = () => {
 			const monthlyDiet = [];
 			const today = new Date();
-			for (let i = 0; i < 1; i++) {
+			// for past 30 days
+			for (let i = 1; i < 30; i++) {
 				// set dietDate = today - i days
 				const dietDate = new Date(today);
 				dietDate.setDate(today.getDate() - i);
