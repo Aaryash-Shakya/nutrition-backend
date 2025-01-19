@@ -8,6 +8,7 @@ import nutritionService from '../service/nutrition.service';
 import { queryVectors } from '../service/pinecone.service';
 import foodRepository from '../repositories/food.repository';
 import apiResponse from '../helpers/api-response';
+import aprioriService from '../service/apriori.service';
 
 async function recommendationByDeficiency(req: any, res: any, next: any) {
 	logger.log.info({
@@ -20,11 +21,11 @@ async function recommendationByDeficiency(req: any, res: any, next: any) {
 	});
 
 	try {
-		const userId = req.body.userId;
+		const userId = req.query.userId;
 		const userObj = await userRepository.findUserById(userId);
 		// before "2024-12-18T04:17:21.903Z"
 		// after "2024-12-18"
-		const dateString = req.body.date.slice(0, 10);
+		const dateString = req.query.date.slice(0, 10);
 		const dailyIntakeObj =
 			await userFoodIntakeRepository.getDailyIntake(dateString);
 
@@ -141,6 +142,86 @@ async function recommendationByDeficiency(req: any, res: any, next: any) {
 	}
 }
 
+async function recommendationByHistory(req: any, res: any, next: any) {
+	logger.log.info({
+		message:
+			'Inside recommendation controller to get recommendation by history',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/user/recommend/history',
+		method: 'GET',
+	});
+	try {
+		const userId = req.query.userId;
+
+		// here we get a single array of all foods consumed by user in last 30 days
+		const monthlyIntakeObj =
+			await userFoodIntakeRepository.getMonthlyIntakeOfUser(userId);
+		const flattedMonthlyIntakeObj: TUserFoodIntakeWithFood[] = parse(
+			stringify(monthlyIntakeObj)
+		);
+
+		// console.log(flattedMonthlyIntakeObj);
+
+		// create array of array of food ids based on the day
+		// [[foods of day 1], [foods of day 2]]
+
+		// similar to hash table use the date as key and array of food ids as value
+		// when taking date as key remove the date part and keep only the date
+		const dateToFoodIds = new Map<string, number[]>();
+		flattedMonthlyIntakeObj.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+
+			// If the date is already present in the map, then push the food ID
+			if (dateToFoodIds.has(date)) {
+				// Get the foodIds array for the given date
+				const foodIds = dateToFoodIds.get(date);
+
+				// Ensure the food ID is not already in the array
+				if (foodIds && !foodIds.includes(parseInt(intake.foodId))) {
+					foodIds.push(parseInt(intake.foodId));
+				}
+			} else {
+				// If the date is not in the map, initialize a new array with the food ID
+				dateToFoodIds.set(date, [parseInt(intake.foodId)]);
+			}
+		});
+
+		// console.log(dateToFoodIds);\
+
+		// get todays foods
+		const today = new Date();
+		const todayDate = today.toISOString().slice(0, 10);
+		const todaysIntake = dateToFoodIds.get(todayDate);
+		if (!todaysIntake || todaysIntake.length == 0) {
+			return res.status(400).json(
+				await apiResponse.errorResponse(req, res, {
+					message: 'No food intake yet',
+				})
+			);
+		}
+		const recommendedIds = aprioriService.aprioriAlgorithm(
+			dateToFoodIds,
+			todaysIntake
+		);
+
+		const foodObjs = foodRepository.listFoodsByFoodIds(recommendedIds);
+		const successResp = await apiResponse.appResponse(res, {
+			recommendation: foodObjs,
+		});
+		logger.log.info({
+			message: 'Successfully fetched recommendation by history',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	recommendationByDeficiency,
+	recommendationByHistory,
 };
+
