@@ -38,6 +38,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
 			User.hasMany(models.UserFoodIntake, {
 				foreignKey: 'userId',
 			});
+			User.hasMany(models.Feedback, {
+				foreignKey: 'userId',
+			});
 		}
 	}
 	User.init(
