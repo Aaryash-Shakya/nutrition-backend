@@ -44,10 +44,17 @@ const getRecommendation = {
 	}),
 };
 
+const createFeedback = {
+	body: Joi.object({
+		comment: Joi.string().required(),
+	}),
+};
+
 export default {
 	userIdInParams,
 	findUserByEmail,
 	updateUserProfile,
 	getDailyIntake,
 	getRecommendation,
+	createFeedback,
 };

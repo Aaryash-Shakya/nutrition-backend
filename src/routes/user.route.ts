@@ -6,6 +6,7 @@ import userFoodIntakeController from '../controller/userFoodIntake.controller';
 import userFoodIntakeValidation from '../validation/userFoodIntake.validation';
 import recommendationController from '../controller/recommendation.controller';
 import authMiddleware from '../middleware/auth.middleware';
+import feedbackController from '../controller/feedback.controller';
 
 const router = express.Router();
 
@@ -59,6 +60,15 @@ router
 	.get(
 		authMiddleware.checkAuthHeader,
 		recommendationController.recommendationByHistory
+	);
+
+// Feedback
+router
+	.route('/feedback')
+	.post(
+		authMiddleware.checkAuthHeader,
+		validate(userValidation.createFeedback),
+		feedbackController.createFeedback
 	);
 
 export default router;
