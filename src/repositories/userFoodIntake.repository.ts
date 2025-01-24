@@ -3,6 +3,7 @@ import db from '../../config/sequelize';
 import {
 	TUserFoodIntake,
 	TUserFoodIntakeWithFood,
+	TUserFoodIntakeWithFoodId,
 } from '../types/userFoodIntake';
 
 const DB: any = db;
@@ -12,6 +13,7 @@ function createIntake(data: {
 	userId: string;
 	foodId: string;
 	quantity: number;
+	mealType: string;
 	date: Date;
 }): Promise<TUserFoodIntake> {
 	return UserFoodIntake.create(data);
@@ -50,6 +52,27 @@ function getDailyIntake(date: string): Promise<TUserFoodIntakeWithFood[]> {
 				],
 			},
 		],
+		order: [['date', 'ASC']],
+	});
+}
+
+function getMonthlyIntakeOfUser(
+	userId: string
+): Promise<TUserFoodIntakeWithFoodId[]> {
+	const oneMonthAgo = new Date();
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+	return UserFoodIntake.findAll({
+		where: {
+			userId: userId,
+			date: {
+				[Op.gte]: oneMonthAgo,
+			},
+		},
+		include: {
+			model: Food,
+			attributes: ['id'],
+		},
 	});
 }
 
@@ -64,5 +87,6 @@ function deleteIntake(id: string): Promise<number> {
 export default {
 	createIntake,
 	getDailyIntake,
+	getMonthlyIntakeOfUser,
 	deleteIntake,
 };

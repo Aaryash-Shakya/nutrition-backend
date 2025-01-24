@@ -13,9 +13,6 @@ const findUserByEmail = {
 };
 
 const updateUserProfile = {
-	params: Joi.object({
-		userId: Joi.string().uuid().required(),
-	}),
 	body: Joi.object({
 		name: Joi.string().optional(),
 		age: Joi.number().optional(),
@@ -35,21 +32,15 @@ const updateUserProfile = {
 	),
 };
 
-const addFoodIntake = {
-	body: Joi.object({
-		foodId: Joi.string().required(),
-		userId: Joi.string().uuid().required(),
-		quantity: Joi.number().required(),
-		date: Joi.date().required(),
-	}),
-};
-
 const getDailyIntake = {
 	params: Joi.object({
 		date: Joi.string().required(),
 	}),
-	body: Joi.object({
-		userId: Joi.string().uuid().required(),
+};
+
+const getRecommendation = {
+	query: Joi.object({
+		date: Joi.string().required(),
 	}),
 };
 
@@ -57,6 +48,6 @@ export default {
 	userIdInParams,
 	findUserByEmail,
 	updateUserProfile,
-	addFoodIntake,
 	getDailyIntake,
+	getRecommendation,
 };

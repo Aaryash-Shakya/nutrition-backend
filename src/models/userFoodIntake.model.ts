@@ -1,11 +1,11 @@
 import { Model } from 'sequelize';
-import pwdHashService from '../service/pwd-hash.service';
 
 interface UserFoodIntakeAttributes {
 	id: string;
 	userId: string;
 	foodId: string;
 	quantity: number;
+	mealType: string;
 	date: Date;
 }
 
@@ -18,6 +18,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
 		userId!: string;
 		foodId!: string;
 		quantity!: number;
+		mealType!: string;
 		date!: Date;
 
 		static associate(models: any) {
@@ -56,6 +57,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
 			quantity: {
 				type: DataTypes.FLOAT,
 				allowNull: false,
+			},
+			mealType: {
+				type: DataTypes.ENUM('BREAKFAST', 'LUNCH', 'SNACK', 'DINNER'),
+				allowNull: false,
+				defaultValue: 'SNACK',
 			},
 			date: {
 				type: DataTypes.DATE,

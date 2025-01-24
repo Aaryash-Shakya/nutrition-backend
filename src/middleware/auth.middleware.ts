@@ -39,10 +39,10 @@ export async function checkAuthHeader(req: any, res: any, next: any) {
 				}
 			}
 			if (decoded) {
+				req.userId = decoded.iss;
 				req.email = decoded.email;
-				req.role = decoded.role;
-				req.auth = decoded.iss;
 				req.name = decoded.name;
+				req.role = decoded.role;
 				return next();
 			}
 			const jwtError = {

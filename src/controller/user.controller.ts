@@ -9,12 +9,12 @@ async function findUserProfileById(req: any, res: any, next: any) {
 		message: 'Inside user controller to find user profile by id',
 		reqId: req.id,
 		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-		api: '/user/profile/:userId',
+		api: '/user/profile',
 		method: 'GET',
 	});
 
 	try {
-		const userId = req.params.userId;
+		const userId = req.userId;
 		const userObj = await userRepository.findUserById(userId);
 		if (!userObj) {
 			res.statusCode = 404;
@@ -55,12 +55,12 @@ async function updateUserProfile(req: any, res: any, next: any) {
 		message: 'Inside user controller to update user profile',
 		reqId: req.id,
 		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-		api: '/user/update/:userId',
+		api: '/user/update',
 		method: 'PUT',
 	});
 
 	try {
-		const userId = req.params.userId;
+		const userId = req.userId;
 		const userObj = await userRepository.findUserById(userId);
 		if (!userObj) {
 			res.statusCode = 404;

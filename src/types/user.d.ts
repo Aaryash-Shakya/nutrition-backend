@@ -1,4 +1,3 @@
-import { TEducation, TExperience } from './model';
 import { TActivityLevels } from './nutrition';
 
 export type TGender = 'MALE' | 'FEMALE' | 'OTHER';

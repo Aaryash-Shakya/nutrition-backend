@@ -5,12 +5,19 @@ export type TUserFoodIntake = {
 	userId: string;
 	foodId: string;
 	quantity: number;
-	date: Date;
-	createdAt: Date;
-	updatedAt: Date;
+	mealType: 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
+	date: string;
+	createdAt: string;
+	updatedAt: string;
 };
 
 export type TUserFoodIntakeWithFood = TUserFoodIntake & {
 	Food: TFoodMinimal;
+};
+
+export type TUserFoodIntakeWithFoodId = TUserFoodIntake & {
+	Food: {
+		id: string;
+	};
 };
 
