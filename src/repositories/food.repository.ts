@@ -111,10 +111,15 @@ function listFoodsByFoodIds(foodIds: number[]): Promise<TFoodMinimal[]> {
 	});
 }
 
+function countFoods(): Promise<number> {
+	return Food.count();
+}
+
 export default {
 	findFoodById,
 	findMinimalFoodById,
 	searchFoodByName,
 	listFoods,
 	listFoodsByFoodIds,
+	countFoods,
 };

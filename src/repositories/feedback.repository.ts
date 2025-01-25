@@ -36,7 +36,12 @@ async function listFeedbacksWithUser(paginationParams: TPaginationParams) {
 	};
 }
 
+function countFeedbacks(): Promise<number> {
+	return Feedback.count();
+}
+
 export default {
 	createFeedback,
 	listFeedbacksWithUser,
+	countFeedbacks,
 };

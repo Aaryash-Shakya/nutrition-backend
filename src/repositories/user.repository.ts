@@ -107,12 +107,31 @@ function getUserIds(where: any): Promise<string[]> {
 	});
 }
 
-function countUsersByGender(): Promise<any> {
+function countUsersByGender(): Promise<
+	[
+		{
+			gender: 'MALE';
+			genderCount: string;
+		},
+		{
+			gender: 'FEMALE';
+			genderCount: string;
+		},
+		{
+			gender: 'OTHER';
+			genderCount: string;
+		},
+	]
+> {
 	return User.findAll({
 		attributes: ['gender', [fn('COUNT', col('gender')), 'genderCount']],
 		group: ['gender'],
 		raw: true,
 	});
+}
+
+function countUsers(): Promise<number> {
+	return User.count();
 }
 
 export default {
@@ -125,4 +144,5 @@ export default {
 	updateUserProfile,
 	getUserIds,
 	countUsersByGender,
+	countUsers,
 };

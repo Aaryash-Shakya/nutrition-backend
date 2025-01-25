@@ -8,6 +8,8 @@ import nutritionService from '../service/nutrition.service';
 import { TUserWithStats } from '../types/user';
 import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutrientCalculatorService from '../service/nutrient-calculator.service';
+import feedbackRepository from '../repositories/feedback.repository';
+import foodRepository from '../repositories/food.repository';
 
 async function findUserProfileById(req: any, res: any, next: any) {
 	logger.log.info({
@@ -231,10 +233,42 @@ async function countUsersByGender(req: any, res: any, next: any) {
 	}
 }
 
+async function overview(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to get overview',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/overview',
+		method: 'GET',
+	});
+	try {
+		const userCount = await userRepository.countUsers();
+		const foodCount = await foodRepository.countFoods();
+		const intakeCount = await userFoodIntakeRepository.countIntakes();
+		const feedbackCount = await feedbackRepository.countFeedbacks();
+
+		const successResp = await apiResponse.appResponse(res, {
+			userCount,
+			foodCount,
+			intakeCount,
+			feedbackCount,
+		});
+		logger.log.info({
+			message: 'Successfully fetched overview',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	findUserProfileById,
 	updateUserProfile,
 	listUsers,
 	getMonthlyIntakeByGender,
 	countUsersByGender,
+	overview,
 };
