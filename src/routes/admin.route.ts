@@ -20,12 +20,22 @@ router.route('/overview').get(userController.overview);
 // activity
 router.route('/activity').get(userFoodIntakeController.monthlyRecords);
 
-router.route('/activity/gender').get(userFoodIntakeController.weeklyRecordsByGender);
-
 // gender
 router
 	.route('/monthly-intake/gender')
 	.get(userController.getMonthlyIntakeByGender);
 router.route('/analytics/gender/count').get(userController.countUsersByGender);
+router
+	.route('/activity/gender')
+	.get(userFoodIntakeController.weeklyRecordsByGender);
+
+// age
+router
+	.route('/monthly-intake/age')
+	.get(userController.getMonthlyIntakeByAge);
+router.route('/analytics/age/count').get(userController.countUsersByAge);
+router
+	.route('/activity/age')
+	.get(userFoodIntakeController.weeklyRecordsByAge);
 
 export default router;

@@ -1,4 +1,4 @@
-import { col, fn, Op } from 'sequelize';
+import { Op } from 'sequelize';
 import db from '../../config/sequelize';
 import {
 	TUserFoodIntake,
@@ -19,12 +19,16 @@ function createIntake(data: {
 	return UserFoodIntake.create(data);
 }
 
-function getDailyIntake(date: string): Promise<TUserFoodIntakeWithFood[]> {
+function getDailyIntake(
+	date: string,
+	userId: string
+): Promise<TUserFoodIntakeWithFood[]> {
 	const startDate = new Date(date);
 	const endDate = new Date(startDate);
 	endDate.setDate(startDate.getDate() + 1);
 	return UserFoodIntake.findAll({
 		where: {
+			userId,
 			date: {
 				[Op.gte]: startDate,
 				[Op.lt]: endDate,

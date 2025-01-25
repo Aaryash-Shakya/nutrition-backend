@@ -1,4 +1,4 @@
-import { col, fn, Op } from 'sequelize';
+import { col, fn } from 'sequelize';
 import db from '../../config/sequelize';
 import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
 import { TUser } from '../types/user';

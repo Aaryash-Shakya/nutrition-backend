@@ -26,8 +26,10 @@ async function recommendationByDeficiency(req: any, res: any, next: any) {
 		// before "2024-12-18T04:17:21.903Z"
 		// after "2024-12-18"
 		const dateString = req.query.date.slice(0, 10);
-		const dailyIntakeObj =
-			await userFoodIntakeRepository.getDailyIntake(dateString);
+		const dailyIntakeObj = await userFoodIntakeRepository.getDailyIntake(
+			dateString,
+			userId
+		);
 
 		// calculate the total intake for the day
 		const totalIntake: TFoodRecommendationNutrients = {

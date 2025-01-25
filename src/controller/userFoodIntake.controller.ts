@@ -9,6 +9,7 @@ import {
 } from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import userRepository from '../repositories/user.repository';
+import { Op } from 'sequelize';
 
 async function addFoodIntake(req: any, res: any, next: any) {
 	logger.log.info({
@@ -57,7 +58,7 @@ async function getDailyIntake(req: any, res: any, next: any) {
 		// after "2024-12-18"
 		const dateString = req.params.date.slice(0, 10);
 		const dailyIntakeObj =
-			await userFoodIntakeRepository.getDailyIntake(dateString);
+			await userFoodIntakeRepository.getDailyIntake(dateString, userId);
 
 		// calculate the total intake for the day
 		const totalIntake: TFoodRecommendationNutrients = {
@@ -266,10 +267,122 @@ async function weeklyRecordsByGender(req: any, res: any, next: any) {
 	}
 }
 
+async function weeklyRecordsByAge(req: any, res: any, next: any) {
+	logger.log.info({
+		message:
+			'Inside userFoodIntake controller to get monthly records by age',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/activity/age',
+		method: 'GET',
+	});
+
+	try {
+		const youngIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [18, 25],
+			},
+		});
+		const middleIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [26, 40],
+			},
+		});
+		const adultIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [41, 55],
+			},
+		});
+		const oldIds = await userRepository.getUserIds({
+			age: {
+				[Op.gt]: 55,
+			},
+		});
+
+		const youngIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(youngIds);
+		const flattedYoungIntake: TUserFoodIntake[] = parse(
+			stringify(youngIntake)
+		);
+		const youngIntakesPerDay = new Map<string, number>();
+		flattedYoungIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (youngIntakesPerDay.has(date)) {
+				const count = youngIntakesPerDay.get(date);
+				youngIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				youngIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const middleIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(middleIds);
+		const flattedMiddleIntake: TUserFoodIntake[] = parse(
+			stringify(middleIntake)
+		);
+		const middleIntakesPerDay = new Map<string, number>();
+		flattedMiddleIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (middleIntakesPerDay.has(date)) {
+				const count = middleIntakesPerDay.get(date);
+				middleIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				middleIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const adultIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(adultIds);
+		const flattedadultIntake: TUserFoodIntake[] = parse(
+			stringify(adultIntake)
+		);
+		const adultIntakesPerDay = new Map<string, number>();
+		flattedadultIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (adultIntakesPerDay.has(date)) {
+				const count = adultIntakesPerDay.get(date);
+				adultIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				adultIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const oldIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(oldIds);
+		const flattedOldIntake: TUserFoodIntake[] = parse(stringify(oldIntake));
+		const oldIntakesPerDay = new Map<string, number>();
+		flattedOldIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (oldIntakesPerDay.has(date)) {
+				const count = oldIntakesPerDay.get(date);
+				oldIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				oldIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const successResp = await apiResponse.appResponse(res, {
+			young: Object.fromEntries(youngIntakesPerDay),
+			middle: Object.fromEntries(middleIntakesPerDay),
+			adult: Object.fromEntries(adultIntakesPerDay),
+			old: Object.fromEntries(oldIntakesPerDay),
+		});
+		logger.log.info({
+			message: 'Successfully fetched monthly records by age',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	addFoodIntake,
 	getDailyIntake,
 	deleteFoodIntake,
 	monthlyRecords,
 	weeklyRecordsByGender,
+	weeklyRecordsByAge,
 };

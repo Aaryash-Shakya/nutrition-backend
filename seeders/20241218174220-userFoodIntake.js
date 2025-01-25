@@ -6,16 +6,14 @@ const uuid = require('uuid');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		let userIdDemo = 'b4aaeff2-5f56-4eb1-90e9-772b408afe3e';
-
-		const getBreakfast = (dietDate) => {
+		const getBreakfast = (dietDate, userIdDemo) => {
 			const breakfast1 = [
 				{
 					id: uuid.v4(),
 					userId: userIdDemo,
 					// Milk
 					foodId: 915,
-					quantity: 1,
+					quantity: 0.5,
 					mealType: 'BREAKFAST',
 					date: dietDate,
 					createdAt: dietDate,
@@ -61,7 +59,7 @@ module.exports = {
 					userId: userIdDemo,
 					// Crackers
 					foodId: 91,
-					quantity: 1,
+					quantity: 0.5,
 					mealType: 'BREAKFAST',
 					date: dietDate,
 					createdAt: dietDate,
@@ -79,13 +77,13 @@ module.exports = {
 					updatedAt: dietDate,
 				},
 			];
+			const breakfast3 = [];
 			const random = Math.random();
-			if (random < 0.5) {
-				return breakfast1;
-			}
-			return breakfast2;
+			if (random < 0.45) return breakfast1;
+			else if (random < 0.9) return breakfast2;
+			return breakfast3;
 		};
-		const getLunch = (dietDate) => {
+		const getLunch = (dietDate, userIdDemo) => {
 			const lunch1 = [
 				{
 					id: uuid.v4(),
@@ -103,7 +101,7 @@ module.exports = {
 					userId: userIdDemo,
 					// Dal
 					foodId: 3462,
-					quantity: 2,
+					quantity: 1,
 					mealType: 'LUNCH',
 					date: dietDate,
 					createdAt: dietDate,
@@ -151,7 +149,7 @@ module.exports = {
 			}
 			return lunch2;
 		};
-		const getSnack = (dietDate) => {
+		const getSnack = (dietDate, userIdDemo) => {
 			const snack1 = [
 				{
 					id: uuid.v4(),
@@ -204,27 +202,27 @@ module.exports = {
 					userId: userIdDemo,
 					// Fruit Juice
 					foodId: 3408,
-					quantity: 1,
+					quantity: 0.8,
 					mealType: 'SNACK',
 					date: dietDate,
 					createdAt: dietDate,
 					updatedAt: dietDate,
 				},
 			];
+			const snack3 = [];
 			const random = Math.random();
-			if (random < 0.5) {
-				return snack1;
-			}
-			return snack2;
+			if (random < 0.4) return snack1;
+			else if (random < 0.8) return snack2;
+			return snack3;
 		};
-		const getDinner = (dietDate) => {
+		const getDinner = (dietDate, userIdDemo) => {
 			const dinner1 = [
 				{
 					id: uuid.v4(),
 					userId: userIdDemo,
 					// Rice
 					foodId: 2969,
-					quantity: 2,
+					quantity: 1,
 					mealType: 'DINNER',
 					date: dietDate,
 					createdAt: dietDate,
@@ -235,7 +233,7 @@ module.exports = {
 					userId: userIdDemo,
 					// Dal
 					foodId: 3462,
-					quantity: 2,
+					quantity: 1,
 					mealType: 'DINNER',
 					date: dietDate,
 					createdAt: dietDate,
@@ -246,7 +244,7 @@ module.exports = {
 					userId: userIdDemo,
 					// Chicken
 					foodId: 2750,
-					quantity: 1.5,
+					quantity: 1,
 					mealType: 'DINNER',
 					date: dietDate,
 					createdAt: dietDate,
@@ -281,7 +279,7 @@ module.exports = {
 					userId: userIdDemo,
 					// Tofu
 					foodId: 622,
-					quantity: 1,
+					quantity: 0.5,
 					mealType: 'DINNER',
 					date: dietDate,
 					createdAt: dietDate,
@@ -295,7 +293,7 @@ module.exports = {
 			return dinner2;
 		};
 
-		const getMonthlyDiet = () => {
+		const getMonthlyDiet = (userId) => {
 			const monthlyDiet = [];
 			const today = new Date();
 			// for past 30 days
@@ -304,10 +302,10 @@ module.exports = {
 				const dietDate = new Date(today);
 				dietDate.setDate(today.getDate() - i);
 
-				const breakfast = getBreakfast(dietDate);
-				const lunch = getLunch(dietDate);
-				const snack = getSnack(dietDate);
-				const dinner = getDinner(dietDate);
+				const breakfast = getBreakfast(dietDate, userId);
+				const lunch = getLunch(dietDate, userId);
+				const snack = getSnack(dietDate, userId);
+				const dinner = getDinner(dietDate, userId);
 				// console.log(breakfast);
 				// console.log(lunch);
 				// console.log(snack);
@@ -319,15 +317,22 @@ module.exports = {
 			return monthlyDiet;
 		};
 		// console.log(getMonthlyDiet());
-
+		await new Promise((resolve) => setTimeout(resolve, 10));
 		// male
-		await queryInterface.bulkInsert('UserFoodIntake', getMonthlyDiet());
+		await queryInterface.bulkInsert(
+			'UserFoodIntake',
+			getMonthlyDiet('b4aaeff2-5f56-4eb1-90e9-772b408afe3e')
+		);
 		// female
-		userIdDemo = 'dcc122a1-011d-4af0-9aea-c0b71ca351d1';
-		await queryInterface.bulkInsert('UserFoodIntake', getMonthlyDiet());
+		await queryInterface.bulkInsert(
+			'UserFoodIntake',
+			getMonthlyDiet('dcc122a1-011d-4af0-9aea-c0b71ca351d1')
+		);
 		// other
-		userIdDemo = 'b2bc8718-3c50-496f-9792-520fe1feaa2d';
-		await queryInterface.bulkInsert('UserFoodIntake', getMonthlyDiet());
+		await queryInterface.bulkInsert(
+			'UserFoodIntake',
+			getMonthlyDiet('b2bc8718-3c50-496f-9792-520fe1feaa2d')
+		);
 	},
 
 	async down(queryInterface, Sequelize) {

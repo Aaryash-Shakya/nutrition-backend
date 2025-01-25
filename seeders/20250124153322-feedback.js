@@ -109,6 +109,8 @@ module.exports = {
 				};
 			});
 		}
+		await new Promise((resolve) => setTimeout(resolve, 10));
+
 		await queryInterface.bulkInsert('Feedback', generateRandomFeedback(50));
 	},
 

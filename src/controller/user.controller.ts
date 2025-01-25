@@ -10,6 +10,7 @@ import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
 import nutrientCalculatorService from '../service/nutrient-calculator.service';
 import feedbackRepository from '../repositories/feedback.repository';
 import foodRepository from '../repositories/food.repository';
+import { Op } from 'sequelize';
 
 async function findUserProfileById(req: any, res: any, next: any) {
 	logger.log.info({
@@ -192,6 +193,93 @@ async function getMonthlyIntakeByGender(req: any, res: any, next: any) {
 	}
 }
 
+async function getMonthlyIntakeByAge(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to get monthly intake',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/monthly-intake/age',
+		method: 'GET',
+	});
+
+	try {
+		const youngIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [18, 25],
+			},
+		});
+		const middleIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [26, 40],
+			},
+		});
+		const adultIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [41, 55],
+			},
+		});
+		const oldIds = await userRepository.getUserIds({
+			age: {
+				[Op.gt]: 55,
+			},
+		});
+
+		const youngIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(youngIds);
+		const flattedYoungIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(youngIntakes)
+		);
+
+		const middleIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(
+				middleIds
+			);
+		const flattedMiddleIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(middleIntakes)
+		);
+
+		const adultIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(adultIds);
+		const flattedAdultIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(adultIntakes)
+		);
+
+		const oldIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(oldIds);
+		const flattedOldIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(oldIntakes)
+		);
+
+		const successResp = await apiResponse.appResponse(res, {
+			youngNutrients: nutrientCalculatorService.calculateAverageNutrients(
+				flattedYoungIntakes,
+				youngIds.length
+			),
+			middleNutrients:
+				nutrientCalculatorService.calculateAverageNutrients(
+					flattedMiddleIntakes,
+					middleIds.length
+				),
+			adultNutrients: nutrientCalculatorService.calculateAverageNutrients(
+				flattedAdultIntakes,
+				adultIds.length
+			),
+			oldNutrients: nutrientCalculatorService.calculateAverageNutrients(
+				flattedOldIntakes,
+				oldIds.length
+			),
+		});
+		logger.log.info({
+			message: 'Successfully fetched monthly intake',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 async function countUsersByGender(req: any, res: any, next: any) {
 	logger.log.info({
 		message: 'Inside user controller to count users by gender',
@@ -224,6 +312,54 @@ async function countUsersByGender(req: any, res: any, next: any) {
 		});
 		logger.log.info({
 			message: 'Successfully counted users by gender',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
+async function countUsersByAge(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to count users by age',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/analytics/age/count',
+		method: 'GET',
+	});
+
+	try {
+		const youngIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [18, 25],
+			},
+		});
+		const middleIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [26, 40],
+			},
+		});
+		const adultIds = await userRepository.getUserIds({
+			age: {
+				[Op.between]: [41, 55],
+			},
+		});
+		const oldIds = await userRepository.getUserIds({
+			age: {
+				[Op.gt]: 55,
+			},
+		});
+
+		const successResp = await apiResponse.appResponse(res, {
+			youngCount: youngIds.length,
+			middleCount: middleIds.length,
+			adultCount: adultIds.length,
+			oldCount: oldIds.length,
+		});
+		logger.log.info({
+			message: 'Successfully counted users by age',
 			reqId: req.id,
 		});
 		return res.json(successResp);
@@ -269,6 +405,8 @@ export default {
 	updateUserProfile,
 	listUsers,
 	getMonthlyIntakeByGender,
+	getMonthlyIntakeByAge,
 	countUsersByGender,
+	countUsersByAge,
 	overview,
 };

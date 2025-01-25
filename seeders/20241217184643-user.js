@@ -97,7 +97,7 @@ module.exports = {
 			'$2b$12$DOP7eot4fEpzZ5TPczFy6eEXfrQ1XY.dzub4Emv5GWgYLu.UyZd5a';
 
 		function generateRandomUser() {
-			return Array.from({ length: uuids.length - 1 }, (_, index) => ({
+			return Array.from({ length: uuids.length }, (_, index) => ({
 				id: uuids[index],
 				name: chance.name(),
 				email: chance.email(),
