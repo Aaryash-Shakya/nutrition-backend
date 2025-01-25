@@ -71,4 +71,8 @@ router
 		feedbackController.createFeedback
 	);
 
+router
+	.route('/report')
+	.get(authMiddleware.checkAuthHeader, userController.getUserReport);
+
 export default router;

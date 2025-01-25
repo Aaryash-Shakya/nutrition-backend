@@ -6,7 +6,10 @@ import userRepository from '../repositories/user.repository';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
 import nutritionService from '../service/nutrition.service';
 import { TUserWithStats } from '../types/user';
-import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
+import {
+	TUserFoodIntake,
+	TUserFoodIntakeWithFood,
+} from '../types/userFoodIntake';
 import nutrientCalculatorService from '../service/nutrient-calculator.service';
 import feedbackRepository from '../repositories/feedback.repository';
 import foodRepository from '../repositories/food.repository';
@@ -404,6 +407,66 @@ async function overview(req: any, res: any, next: any) {
 	}
 }
 
+async function getUserReport(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to get user report',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/user/report',
+		method: 'GET',
+	});
+
+	try {
+		const userId = req.userId;
+		const userObj = await userRepository.findUserById(userId);
+
+		const bmi = nutritionService.calculateBMI(
+			userObj.weight,
+			userObj.height
+		);
+		const bmiCategory = nutritionService.getBMICategory(bmi);
+
+		const weeklyIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds([userId]);
+		const flattedWeeklyIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(weeklyIntakes)
+		);
+
+		const dailyCalories: Record<string, number> = {};
+
+		flattedWeeklyIntakes.forEach((intake) => {
+			// Extract only the date part (YYYY-MM-DD)
+			const date = intake.date.split('T')[0];
+
+			const caloriesPer100g = parseFloat(intake.Food.calories); // Get calories per 100g
+			const quantity = intake.quantity; // Get quantity multiplier
+
+			// Calculate total calories for the given quantity
+			const foodCalories = caloriesPer100g * quantity;
+
+			// Add calories to the corresponding date
+			if (!dailyCalories[date]) {
+				dailyCalories[date] = 0;
+			}
+			dailyCalories[date] += foodCalories;
+		});
+
+		logger.log.info({
+			message: 'Successfully fetched report',
+			reqId: req.id,
+		});
+		const successResp = await apiResponse.appResponse(res, {
+			bmi,
+			bmiCategory,
+			dailyCalories,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	findUserProfileById,
 	updateUserProfile,
@@ -413,4 +476,5 @@ export default {
 	countUsersByGender,
 	countUsersByAge,
 	overview,
+	getUserReport,
 };

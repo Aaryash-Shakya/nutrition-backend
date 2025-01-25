@@ -155,6 +155,7 @@ function getMonthlyIntakesByUserIds(
 				'caffeine',
 			],
 		},
+		order: [['date', 'ASC']],
 	});
 }
 
