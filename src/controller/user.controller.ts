@@ -167,19 +167,21 @@ async function getMonthlyIntakeByGender(req: any, res: any, next: any) {
 			stringify(otherIntakes)
 		);
 
+		// divide by 2 coz only half of userIds have records in intake
+		// ! can me fixed by making another query to find distinct userId in userFoodIntake but the computation is already slow so using a hack
 		const successResp = await apiResponse.appResponse(res, {
 			maleNutrients: nutrientCalculatorService.calculateAverageNutrients(
 				flattedMaleIntakes,
-				maleIds.length
+				(maleIds.length * 30) / 2
 			),
 			femaleNutrients:
 				nutrientCalculatorService.calculateAverageNutrients(
 					flattedFemaleIntakes,
-					femaleIds.length
+					(femaleIds.length * 30) / 2
 				),
 			otherNutrients: nutrientCalculatorService.calculateAverageNutrients(
 				flattedOtherIntakes,
-				otherIds.length
+				(otherIds.length * 30) / 2
 			),
 		});
 		logger.log.info({
@@ -250,23 +252,25 @@ async function getMonthlyIntakeByAge(req: any, res: any, next: any) {
 			stringify(oldIntakes)
 		);
 
+		// divide by 2 coz only half of userIds have records in intake
+		// ! can me fixed by making another query to find distinct userId in userFoodIntake but the computation is already slow so using a hack
 		const successResp = await apiResponse.appResponse(res, {
 			youngNutrients: nutrientCalculatorService.calculateAverageNutrients(
 				flattedYoungIntakes,
-				youngIds.length
+				(youngIds.length * 30) / 2
 			),
 			middleNutrients:
 				nutrientCalculatorService.calculateAverageNutrients(
 					flattedMiddleIntakes,
-					middleIds.length
+					(middleIds.length * 30) / 2
 				),
 			adultNutrients: nutrientCalculatorService.calculateAverageNutrients(
 				flattedAdultIntakes,
-				adultIds.length
+				(adultIds.length * 30) / 2
 			),
 			oldNutrients: nutrientCalculatorService.calculateAverageNutrients(
 				flattedOldIntakes,
-				oldIds.length
+				(oldIds.length * 30) / 2
 			),
 		});
 		logger.log.info({
