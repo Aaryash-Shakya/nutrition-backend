@@ -169,11 +169,12 @@ async function getMonthlyIntakeByGender(req: any, res: any, next: any) {
 				flattedMaleIntakes,
 				maleIds.length
 			),
-			femaleIntakes: nutrientCalculatorService.calculateAverageNutrients(
-				flattedFemaleIntakes,
-				femaleIds.length
-			),
-			otherIntakes: nutrientCalculatorService.calculateAverageNutrients(
+			femaleNutrients:
+				nutrientCalculatorService.calculateAverageNutrients(
+					flattedFemaleIntakes,
+					femaleIds.length
+				),
+			otherNutrients: nutrientCalculatorService.calculateAverageNutrients(
 				flattedOtherIntakes,
 				otherIds.length
 			),
@@ -189,9 +190,51 @@ async function getMonthlyIntakeByGender(req: any, res: any, next: any) {
 	}
 }
 
+async function countUsersByGender(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to count users by gender',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/analytics/gender/count',
+		method: 'GET',
+	});
+
+	try {
+		const count: [
+			{
+				gender: 'MALE';
+				genderCount: string;
+			},
+			{
+				gender: 'FEMALE';
+				genderCount: string;
+			},
+			{
+				gender: 'OTHER';
+				genderCount: string;
+			},
+		] = await userRepository.countUsersByGender();
+
+		const successResp = await apiResponse.appResponse(res, {
+			maleCount: count.find((c) => c.gender === 'MALE')?.genderCount,
+			femaleCount: count.find((c) => c.gender === 'FEMALE')?.genderCount,
+			otherCount: count.find((c) => c.gender === 'OTHER')?.genderCount,
+		});
+		logger.log.info({
+			message: 'Successfully counted users by gender',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	findUserProfileById,
 	updateUserProfile,
 	listUsers,
 	getMonthlyIntakeByGender,
+	countUsersByGender,
 };

@@ -12,8 +12,10 @@ router.route('/foods').get(foodController.listFoods);
 router.route('/feedbacks').get(feedbackController.listFeedbacks);
 
 // for graphs
+// gender
 router
 	.route('/monthly-intake/gender')
 	.get(userController.getMonthlyIntakeByGender);
+router.route('/analytics/gender/count').get(userController.countUsersByGender);
 
 export default router;

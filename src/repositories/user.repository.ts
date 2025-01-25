@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { col, fn, Op } from 'sequelize';
 import db from '../../config/sequelize';
 import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
 import { TUser } from '../types/user';
@@ -107,6 +107,14 @@ function getUserIds(where: any): Promise<string[]> {
 	});
 }
 
+function countUsersByGender(): Promise<any> {
+	return User.findAll({
+		attributes: ['gender', [fn('COUNT', col('gender')), 'genderCount']],
+		group: ['gender'],
+		raw: true,
+	});
+}
+
 export default {
 	listAllUsers,
 	activateAccount,
@@ -116,4 +124,5 @@ export default {
 	updateUserPassword,
 	updateUserProfile,
 	getUserIds,
+	countUsersByGender,
 };
