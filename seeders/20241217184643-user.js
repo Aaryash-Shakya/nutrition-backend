@@ -1,7 +1,40 @@
+/* eslint-disable no-undef */
 'use strict';
+
+const Chance = require('chance');
+const chance = new Chance();
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
+		const password =
+			'$2b$12$DOP7eot4fEpzZ5TPczFy6eEXfrQ1XY.dzub4Emv5GWgYLu.UyZd5a';
+
+		function generateRandomUser(count) {
+			return Array.from({ length: count }, () => ({
+				id: chance.guid(),
+				name: chance.name(),
+				email: chance.email(),
+				password: password,
+				role: 'USER',
+				isActive: true,
+				gender: chance.pickone(['MALE', 'FEMALE', 'OTHER']),
+				age: chance.age({ min: 18, max: 80 }),
+				weight: chance.integer({ min: 50, max: 100 }),
+				height: chance.integer({ min: 150, max: 200 }),
+				activityLevel: chance.pickone([
+					'SEDENTARY',
+					'LIGHTLY_ACTIVE',
+					'MODERATELY_ACTIVE',
+					'VERY_ACTIVE',
+					'SUPER_ACTIVE',
+				]),
+				calorieGoal: chance.integer({ min: 1500, max: 3000 }),
+				createdAt: chance.date({ year: 2022 }),
+				updatedAt: chance.date({ year: 2023 }),
+			}));
+		}
+
 		// password: 'Password@123'
 		await queryInterface.bulkInsert('User', [
 			{
@@ -56,6 +89,8 @@ module.exports = {
 				updatedAt: new Date(),
 			},
 		]);
+
+		await queryInterface.bulkInsert('User', generateRandomUser(100));
 	},
 
 	async down(queryInterface, Sequelize) {

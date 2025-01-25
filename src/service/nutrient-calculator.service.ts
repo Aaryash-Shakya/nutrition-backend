@@ -67,6 +67,7 @@ const calculateAverageNutrients = (
 			parseFloat(intake.Food.calcium) * intake.quantity;
 	});
 
+
 	totalIntakes.calories /= userCount;
 	totalIntakes.carbohydrate /= userCount;
 	totalIntakes.total_fat /= userCount;
