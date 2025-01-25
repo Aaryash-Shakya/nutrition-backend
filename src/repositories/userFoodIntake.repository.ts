@@ -19,12 +19,16 @@ function createIntake(data: {
 	return UserFoodIntake.create(data);
 }
 
-function getDailyIntake(date: string): Promise<TUserFoodIntakeWithFood[]> {
+function getDailyIntake(
+	date: string,
+	userId: string
+): Promise<TUserFoodIntakeWithFood[]> {
 	const startDate = new Date(date);
 	const endDate = new Date(startDate);
 	endDate.setDate(startDate.getDate() + 1);
 	return UserFoodIntake.findAll({
 		where: {
+			userId,
 			date: {
 				[Op.gte]: startDate,
 				[Op.lt]: endDate,
@@ -76,6 +80,39 @@ function getMonthlyIntakeOfUser(
 	});
 }
 
+function getMonthlyIntakes(): Promise<TUserFoodIntake[]> {
+	const oneMonthAgo = new Date();
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+	return UserFoodIntake.findAll({
+		where: {
+			date: {
+				[Op.gte]: oneMonthAgo,
+			},
+		},
+		order: [['date', 'ASC']],
+	});
+}
+
+function getWeeklyIntakesByUserIds(
+	userIds: string[]
+): Promise<TUserFoodIntake[]> {
+	const oneWeekAgo = new Date();
+	oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+	return UserFoodIntake.findAll({
+		where: {
+			userId: {
+				[Op.in]: userIds,
+			},
+			date: {
+				[Op.gte]: oneWeekAgo,
+			},
+		},
+		order: [['date', 'ASC']],
+	});
+}
+
 function deleteIntake(id: string): Promise<number> {
 	return UserFoodIntake.destroy({
 		where: {
@@ -84,9 +121,54 @@ function deleteIntake(id: string): Promise<number> {
 	});
 }
 
+function getMonthlyIntakesByUserIds(
+	userTds: string[]
+): Promise<TUserFoodIntakeWithFood[]> {
+	const oneMonthAgo = new Date();
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+	return UserFoodIntake.findAll({
+		where: {
+			userId: {
+				[Op.in]: userTds,
+			},
+			date: {
+				[Op.gte]: oneMonthAgo,
+			},
+		},
+		include: {
+			model: Food,
+			attributes: [
+				'id',
+				'name',
+				'serving_size',
+				'calories',
+				'carbohydrate',
+				'total_fat',
+				'cholesterol',
+				'protein',
+				'fiber',
+				'sugars',
+				'sodium',
+				'vitamin_d',
+				'calcium',
+				'iron',
+				'caffeine',
+			],
+		},
+	});
+}
+
+function countIntakes(): Promise<number> {
+	return UserFoodIntake.count();
+}
+
 export default {
 	createIntake,
 	getDailyIntake,
 	getMonthlyIntakeOfUser,
+	getMonthlyIntakes,
 	deleteIntake,
+	getMonthlyIntakesByUserIds,
+	countIntakes,
+	getWeeklyIntakesByUserIds,
 };

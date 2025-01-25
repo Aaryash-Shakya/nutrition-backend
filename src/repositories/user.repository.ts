@@ -1,3 +1,4 @@
+import { col, fn } from 'sequelize';
 import db from '../../config/sequelize';
 import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
 import { TUser } from '../types/user';
@@ -96,6 +97,43 @@ function updateUserProfile(
 	});
 }
 
+function getUserIds(where: any): Promise<string[]> {
+	return User.findAll({
+		attributes: ['id'],
+		where,
+		raw: true,
+	}).then((users: { id: string }[]) => {
+		return users.map((user: { id: string }) => user.id);
+	});
+}
+
+function countUsersByGender(): Promise<
+	[
+		{
+			gender: 'MALE';
+			genderCount: string;
+		},
+		{
+			gender: 'FEMALE';
+			genderCount: string;
+		},
+		{
+			gender: 'OTHER';
+			genderCount: string;
+		},
+	]
+> {
+	return User.findAll({
+		attributes: ['gender', [fn('COUNT', col('gender')), 'genderCount']],
+		group: ['gender'],
+		raw: true,
+	});
+}
+
+function countUsers(): Promise<number> {
+	return User.count();
+}
+
 export default {
 	listAllUsers,
 	activateAccount,
@@ -104,4 +142,7 @@ export default {
 	findUserByEmail,
 	updateUserPassword,
 	updateUserProfile,
+	getUserIds,
+	countUsersByGender,
+	countUsers,
 };

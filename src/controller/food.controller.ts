@@ -70,7 +70,6 @@ async function listFoods(req: any, res: any, next: any) {
 
 	try {
 		const paginationParams = searchParams.getPaginationParams(req.query);
-		console.log("paginationParams ==> ", paginationParams);
 		const foodList = await foodRepository.listFoods(paginationParams);
 		const successResp = await apiResponse.appResponse(res, foodList);
 		logger.log.info({

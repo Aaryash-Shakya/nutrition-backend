@@ -80,7 +80,7 @@ async function listFoods(paginationParams: TPaginationParams): Promise<{
 	const pagination = {
 		currentPage: paginationParams.page,
 		pageSize: paginationParams.limit,
-		totalPages: Math.ceil(records.count / 100),
+		totalPages: Math.ceil(records.count / paginationParams.limit),
 		totalRecords: records.count,
 	};
 	return {
@@ -111,10 +111,15 @@ function listFoodsByFoodIds(foodIds: number[]): Promise<TFoodMinimal[]> {
 	});
 }
 
+function countFoods(): Promise<number> {
+	return Food.count();
+}
+
 export default {
 	findFoodById,
 	findMinimalFoodById,
 	searchFoodByName,
 	listFoods,
 	listFoodsByFoodIds,
+	countFoods,
 };
