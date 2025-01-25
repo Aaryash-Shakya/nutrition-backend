@@ -132,8 +132,55 @@ async function deleteFoodIntake(req: any, res: any, next: any) {
 	}
 }
 
+async function monthlyRecords(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside userFoodIntake controller to get monthly records',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/activity',
+		method: 'GET',
+	});
+
+	try {
+		const monthlyIntake =
+			await userFoodIntakeRepository.getMonthlyIntakes();
+		const flattedMonthlyIntake: TUserFoodIntakeWithFood[] = parse(
+			stringify(monthlyIntake)
+		);
+		const intakesPerDay = new Map<string, number>();
+		flattedMonthlyIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+
+			// If the date is already present in the map, increment the count
+			if (intakesPerDay.has(date)) {
+				const count = intakesPerDay.get(date);
+
+				// Ensure count is a number and increment
+				intakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				// If the date is not in the map, initialize a count with 1
+				intakesPerDay.set(date, 1);
+			}
+		});
+
+		const successResp = await apiResponse.appResponse(
+			res,
+			Object.fromEntries(intakesPerDay)
+		);
+		logger.log.info({
+			message: 'Successfully fetched monthly records',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	addFoodIntake,
 	getDailyIntake,
 	deleteFoodIntake,
+	monthlyRecords,
 };

@@ -2,6 +2,7 @@ import express from 'express';
 import feedbackController from '../controller/feedback.controller';
 import userController from '../controller/user.controller';
 import foodController from '../controller/food.controller';
+import userFoodIntakeController from '../controller/userFoodIntake.controller';
 
 const router = express.Router();
 
@@ -15,6 +16,9 @@ router.route('/feedbacks').get(feedbackController.listFeedbacks);
 
 // overview
 router.route('/overview').get(userController.overview);
+
+// activity
+router.route('/activity').get(userFoodIntakeController.monthlyRecords);
 
 // gender
 router

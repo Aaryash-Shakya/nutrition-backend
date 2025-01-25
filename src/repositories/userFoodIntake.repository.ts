@@ -76,6 +76,19 @@ function getMonthlyIntakeOfUser(
 	});
 }
 
+function getMonthlyIntakes(): Promise<TUserFoodIntake[]> {
+	const oneMonthAgo = new Date();
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+	return UserFoodIntake.findAll({
+		where: {
+			date: {
+				[Op.gte]: oneMonthAgo,
+			},
+		},
+	});
+}
+
 function deleteIntake(id: string): Promise<number> {
 	return UserFoodIntake.destroy({
 		where: {
@@ -129,6 +142,7 @@ export default {
 	createIntake,
 	getDailyIntake,
 	getMonthlyIntakeOfUser,
+	getMonthlyIntakes,
 	deleteIntake,
 	getMonthlyIntakesByUserIds,
 	countIntakes,
