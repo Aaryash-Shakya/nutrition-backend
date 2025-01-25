@@ -6,3 +6,11 @@ export type TFeedback = {
 	updatedAt: string;
 };
 
+export type TFeedbackWithUser = TFeedback & {
+	User: {
+		id: string;
+		name: string;
+		email: string;
+	};
+};
+

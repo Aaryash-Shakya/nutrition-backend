@@ -1,4 +1,5 @@
 import apiResponse from '../helpers/api-response';
+import searchParams from '../helpers/search-params';
 import logger from '../logger';
 import userRepository from '../repositories/user.repository';
 import nutritionService from '../service/nutrition.service';
@@ -95,7 +96,32 @@ async function updateUserProfile(req: any, res: any, next: any) {
 	}
 }
 
+async function listUsers(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to list users',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/users',
+		method: 'GET',
+	});
+
+	try {
+		const paginationParams = searchParams.getPaginationParams(req.query);
+		const users = await userRepository.listAllUsers(paginationParams);
+		const successResp = await apiResponse.appResponse(res, users);
+		logger.log.info({
+			message: 'Successfully fetched users',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	findUserProfileById,
 	updateUserProfile,
+	listUsers,
 };

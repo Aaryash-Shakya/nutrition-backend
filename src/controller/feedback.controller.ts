@@ -43,7 +43,7 @@ async function listFeedbacks(req: any, res: any, next: any) {
 	try {
 		const paginationParams = searchParams.getPaginationParams(req.query);
 		const feedbacks =
-			await feedbackRepository.listFeedbacks(paginationParams);
+			await feedbackRepository.listFeedbacksWithUser(paginationParams);
 		const successResp = await apiResponse.appResponse(res, feedbacks);
 		logger.log.info({
 			message: 'Successfully listed feedbacks',
