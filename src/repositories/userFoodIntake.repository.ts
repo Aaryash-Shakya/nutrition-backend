@@ -86,6 +86,26 @@ function getMonthlyIntakes(): Promise<TUserFoodIntake[]> {
 				[Op.gte]: oneMonthAgo,
 			},
 		},
+		order: [['date', 'ASC']],
+	});
+}
+
+function getWeeklyIntakesByUserIds(
+	userIds: string[]
+): Promise<TUserFoodIntake[]> {
+	const oneWeekAgo = new Date();
+	oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+	return UserFoodIntake.findAll({
+		where: {
+			userId: {
+				[Op.in]: userIds,
+			},
+			date: {
+				[Op.gte]: oneWeekAgo,
+			},
+		},
+		order: [['date', 'ASC']],
 	});
 }
 
@@ -146,4 +166,5 @@ export default {
 	deleteIntake,
 	getMonthlyIntakesByUserIds,
 	countIntakes,
+	getWeeklyIntakesByUserIds,
 };

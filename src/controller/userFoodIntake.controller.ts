@@ -3,7 +3,10 @@ import apiResponse from '../helpers/api-response';
 import logger from '../logger';
 import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
 import { TFoodRecommendationNutrients } from '../types/food';
-import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
+import {
+	TUserFoodIntake,
+	TUserFoodIntakeWithFood,
+} from '../types/userFoodIntake';
 import nutritionService from '../service/nutrition.service';
 import userRepository from '../repositories/user.repository';
 
@@ -178,9 +181,95 @@ async function monthlyRecords(req: any, res: any, next: any) {
 	}
 }
 
+async function weeklyRecordsByGender(req: any, res: any, next: any) {
+	logger.log.info({
+		message:
+			'Inside userFoodIntake controller to get monthly records by gender',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/activity/gender',
+		method: 'GET',
+	});
+
+	try {
+		const maleIds = await userRepository.getUserIds({
+			gender: 'MALE',
+		});
+		const femaleIds = await userRepository.getUserIds({
+			gender: 'FEMALE',
+		});
+		const otherIds = await userRepository.getUserIds({
+			gender: 'OTHER',
+		});
+
+		const maleIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(maleIds);
+		const flattedMaleIntake: TUserFoodIntake[] = parse(
+			stringify(maleIntake)
+		);
+		const maleIntakesPerDay = new Map<string, number>();
+		flattedMaleIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (maleIntakesPerDay.has(date)) {
+				const count = maleIntakesPerDay.get(date);
+				maleIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				maleIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const femaleIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(femaleIds);
+		const flattedFemaleIntake: TUserFoodIntake[] = parse(
+			stringify(femaleIntake)
+		);
+		const femaleIntakesPerDay = new Map<string, number>();
+		flattedFemaleIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (femaleIntakesPerDay.has(date)) {
+				const count = femaleIntakesPerDay.get(date);
+				femaleIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				femaleIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const otherIntake =
+			await userFoodIntakeRepository.getWeeklyIntakesByUserIds(otherIds);
+		const flattedOtherIntake: TUserFoodIntake[] = parse(
+			stringify(otherIntake)
+		);
+		const otherIntakesPerDay = new Map<string, number>();
+		flattedOtherIntake.forEach((intake) => {
+			const date = intake.date.slice(0, 10);
+			if (otherIntakesPerDay.has(date)) {
+				const count = otherIntakesPerDay.get(date);
+				otherIntakesPerDay.set(date, (count ?? 0) + 1);
+			} else {
+				otherIntakesPerDay.set(date, 1);
+			}
+		});
+
+		const successResp = await apiResponse.appResponse(res, {
+			male: Object.fromEntries(maleIntakesPerDay),
+			female: Object.fromEntries(femaleIntakesPerDay),
+			other: Object.fromEntries(otherIntakesPerDay),
+		});
+		logger.log.info({
+			message: 'Successfully fetched monthly records by gender',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	addFoodIntake,
 	getDailyIntake,
 	deleteFoodIntake,
 	monthlyRecords,
+	weeklyRecordsByGender,
 };

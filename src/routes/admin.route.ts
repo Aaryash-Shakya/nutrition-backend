@@ -20,6 +20,8 @@ router.route('/overview').get(userController.overview);
 // activity
 router.route('/activity').get(userFoodIntakeController.monthlyRecords);
 
+router.route('/activity/gender').get(userFoodIntakeController.weeklyRecordsByGender);
+
 // gender
 router
 	.route('/monthly-intake/gender')

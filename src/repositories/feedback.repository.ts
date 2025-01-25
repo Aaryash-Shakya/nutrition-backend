@@ -27,7 +27,7 @@ async function listFeedbacksWithUser(paginationParams: TPaginationParams) {
 	const pagination = {
 		currentPage: paginationParams.page,
 		pageSize: paginationParams.limit,
-		totalPages: Math.ceil(records.count / 100),
+		totalPages: Math.ceil(records.count / paginationParams.limit),
 		totalRecords: records.count,
 	};
 	return {
