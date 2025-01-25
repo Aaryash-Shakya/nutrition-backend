@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict';
 
 const uuid = require('uuid');
@@ -5,7 +6,7 @@ const uuid = require('uuid');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		const userIdDemo = 'b4aaeff2-5f56-4eb1-90e9-772b408afe3e';
+		let userIdDemo = 'b4aaeff2-5f56-4eb1-90e9-772b408afe3e';
 
 		const getBreakfast = (dietDate) => {
 			const breakfast1 = [
@@ -319,6 +320,13 @@ module.exports = {
 		};
 		// console.log(getMonthlyDiet());
 
+		// male
+		await queryInterface.bulkInsert('UserFoodIntake', getMonthlyDiet());
+		// female
+		userIdDemo = 'dcc122a1-011d-4af0-9aea-c0b71ca351d1';
+		await queryInterface.bulkInsert('UserFoodIntake', getMonthlyDiet());
+		// other
+		userIdDemo = 'b2bc8718-3c50-496f-9792-520fe1feaa2d';
 		await queryInterface.bulkInsert('UserFoodIntake', getMonthlyDiet());
 	},
 

@@ -91,7 +91,7 @@ module.exports = {
 			'89fe3c80-144c-4ec2-92bf-f869825d4545',
 			'52cc94a6-dce0-4e88-89e3-45b9cca4dc0c',
 			'f6cbbee1-554c-4eae-b795-320af81a4693',
-			'0241699d-c569-4d86-9e7c-23874681as98',
+			'0241699d-c569-4d86-9e7c-d28709a09a78',
 		];
 		const password =
 			'$2b$12$DOP7eot4fEpzZ5TPczFy6eEXfrQ1XY.dzub4Emv5GWgYLu.UyZd5a';
@@ -159,13 +159,30 @@ module.exports = {
 			},
 			{
 				id: 'dcc122a1-011d-4af0-9aea-c0b71ca351d1',
-				name: 'Kaushal Kishor Mishra',
-				email: 'km645195@gmail.com',
+				name: 'Sita Thapa',
+				email: 'sita@gmail.com',
 				password:
 					'$2b$12$DOP7eot4fEpzZ5TPczFy6eEXfrQ1XY.dzub4Emv5GWgYLu.UyZd5a',
 				role: 'USER',
 				isActive: true,
-				gender: 'MALE',
+				gender: 'FEMALE',
+				age: 24,
+				weight: 55,
+				height: 182,
+				activityLevel: 'LIGHTLY_ACTIVE',
+				calorieGoal: 2000,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+			{
+				id: 'b2bc8718-3c50-496f-9792-520fe1feaa2d',
+				name: 'Hari bahadur',
+				email: 'hari@gmail.com',
+				password:
+					'$2b$12$DOP7eot4fEpzZ5TPczFy6eEXfrQ1XY.dzub4Emv5GWgYLu.UyZd5a',
+				role: 'USER',
+				isActive: true,
+				gender: 'OTHER',
 				age: 24,
 				weight: 55,
 				height: 182,
