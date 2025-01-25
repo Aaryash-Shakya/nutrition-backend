@@ -11,4 +11,9 @@ router.route('/foods').get(foodController.listFoods);
 
 router.route('/feedbacks').get(feedbackController.listFeedbacks);
 
+// for graphs
+router
+	.route('/monthly-intake/gender')
+	.get(userController.getMonthlyIntakeByGender);
+
 export default router;

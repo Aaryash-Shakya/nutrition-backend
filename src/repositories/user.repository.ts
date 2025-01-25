@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import db from '../../config/sequelize';
 import { TPaginationParams, TPaginationResponse } from '../types/searchParams';
 import { TUser } from '../types/user';
@@ -96,6 +97,16 @@ function updateUserProfile(
 	});
 }
 
+function getUserIds(where: any): Promise<string[]> {
+	return User.findAll({
+		attributes: ['id'],
+		where,
+		raw: true,
+	}).then((users: { id: string }[]) => {
+		return users.map((user: { id: string }) => user.id);
+	});
+}
+
 export default {
 	listAllUsers,
 	activateAccount,
@@ -104,4 +115,5 @@ export default {
 	findUserByEmail,
 	updateUserPassword,
 	updateUserProfile,
+	getUserIds,
 };

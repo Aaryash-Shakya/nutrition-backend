@@ -1,9 +1,13 @@
+import { parse, stringify } from 'flatted';
 import apiResponse from '../helpers/api-response';
 import searchParams from '../helpers/search-params';
 import logger from '../logger';
 import userRepository from '../repositories/user.repository';
+import userFoodIntakeRepository from '../repositories/userFoodIntake.repository';
 import nutritionService from '../service/nutrition.service';
 import { TUserWithStats } from '../types/user';
+import { TUserFoodIntakeWithFood } from '../types/userFoodIntake';
+import nutrientCalculatorService from '../service/nutrient-calculator.service';
 
 async function findUserProfileById(req: any, res: any, next: any) {
 	logger.log.info({
@@ -120,8 +124,74 @@ async function listUsers(req: any, res: any, next: any) {
 	}
 }
 
+async function getMonthlyIntakeByGender(req: any, res: any, next: any) {
+	logger.log.info({
+		message: 'Inside user controller to get monthly intake',
+		reqId: req.id,
+		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+		api: '/admin/monthly-intake/gender',
+		method: 'GET',
+	});
+
+	try {
+		const maleIds = await userRepository.getUserIds({
+			gender: 'MALE',
+		});
+		const femaleIds = await userRepository.getUserIds({
+			gender: 'FEMALE',
+		});
+		const otherIds = await userRepository.getUserIds({
+			gender: 'OTHER',
+		});
+
+		const maleIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(maleIds);
+		const flattedMaleIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(maleIntakes)
+		);
+
+		const femaleIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(
+				femaleIds
+			);
+		const flattedFemaleIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(femaleIntakes)
+		);
+
+		const otherIntakes =
+			await userFoodIntakeRepository.getMonthlyIntakesByUserIds(otherIds);
+		const flattedOtherIntakes: TUserFoodIntakeWithFood[] = parse(
+			stringify(otherIntakes)
+		);
+
+		const successResp = await apiResponse.appResponse(res, {
+			maleNutrients: nutrientCalculatorService.calculateAverageNutrients(
+				flattedMaleIntakes,
+				maleIds.length
+			),
+			femaleIntakes: nutrientCalculatorService.calculateAverageNutrients(
+				flattedFemaleIntakes,
+				femaleIds.length
+			),
+			otherIntakes: nutrientCalculatorService.calculateAverageNutrients(
+				flattedOtherIntakes,
+				otherIds.length
+			),
+		});
+		logger.log.info({
+			message: 'Successfully fetched monthly intake',
+			reqId: req.id,
+		});
+		return res.json(successResp);
+	} catch (err) {
+		logger.log.error({ reqId: req.id, message: err });
+		return next(err);
+	}
+}
+
 export default {
 	findUserProfileById,
 	updateUserProfile,
 	listUsers,
+	getMonthlyIntakeByGender,
 };
