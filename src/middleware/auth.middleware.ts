@@ -64,7 +64,7 @@ export async function checkAuthHeader(req: any, res: any, next: any) {
 async function isUserSuperAdmin(req: any, res: any, next: any) {
 	const role = req.role;
 	try {
-		if (role && role === projectEnum.userRole.SUPERADMIN) {
+		if (role && role === projectEnum.userRole.ADMIN) {
 			return next();
 		}
 		const errorMsg = {

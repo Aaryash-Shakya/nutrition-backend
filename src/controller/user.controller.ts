@@ -412,7 +412,7 @@ async function getUserReport(req: any, res: any, next: any) {
 		message: 'Inside user controller to get user report',
 		reqId: req.id,
 		ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-		api: '/admin/user/report',
+		api: '/user/report',
 		method: 'GET',
 	});
 

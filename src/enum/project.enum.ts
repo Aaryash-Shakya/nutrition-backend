@@ -1,5 +1,5 @@
 const userRole = {
-	SUPERADMIN: 'SUPERADMIN',
+	ADMIN: 'ADMIN',
 	USER: 'USER',
 };
 

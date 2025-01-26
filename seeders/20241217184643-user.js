@@ -129,7 +129,7 @@ module.exports = {
 				email: 'admin.shakya@gmail.com',
 				password:
 					'$2b$12$DOP7eot4fEpzZ5TPczFy6eEXfrQ1XY.dzub4Emv5GWgYLu.UyZd5a',
-				role: 'USER',
+				role: 'ADMIN',
 				isActive: true,
 				gender: 'MALE',
 				age: 21,
