@@ -73,6 +73,12 @@ type AssociationRule = {
 	consequent: number[];
 	confidence: number;
 };
+type AssociationRuleWithSupport = {
+	antecedent: number[];
+	consequent: number[];
+	confidence: number;
+	support: number;
+};
 
 function getSubsets(array: number[]): number[][] {
 	const subsets: number[][] = [];
@@ -101,8 +107,8 @@ function arraysEqual(a: number[], b: number[]): boolean {
 function generateAssociationRules(
 	frequentItemsets: FrequentItemset[],
 	minConfidence: number
-): AssociationRule[] {
-	const rules: AssociationRule[] = [];
+): AssociationRuleWithSupport[] {
+	const rules: AssociationRuleWithSupport[] = [];
 
 	frequentItemsets.forEach(({ itemset, support }) => {
 		if (itemset.length > 1) {
@@ -118,14 +124,18 @@ function generateAssociationRules(
 					if (antecedentSupport) {
 						const confidence = support / antecedentSupport;
 						if (confidence >= minConfidence) {
-							rules.push({ antecedent, consequent, confidence });
+							rules.push({
+								antecedent,
+								consequent,
+								confidence,
+								support,
+							});
 						}
 					}
 				}
 			});
 		}
 	});
-
 	return rules;
 }
 
@@ -151,15 +161,22 @@ function generateRecommendations(
 
 function getMatchedAssociationRules(
 	input: number[],
-	associationRules: AssociationRule[]
-): AssociationRule[] {
-	const matchedRules: AssociationRule[] = [];
+	associationRules: AssociationRuleWithSupport[]
+): AssociationRuleWithSupport[] {
+	const matchedRules: AssociationRuleWithSupport[] = [];
 
-	associationRules.forEach(({ antecedent, consequent, confidence }) => {
-		if (antecedent.every((item) => input.includes(item))) {
-			matchedRules.push({ antecedent, consequent, confidence });
+	associationRules.forEach(
+		({ antecedent, consequent, confidence, support }) => {
+			if (antecedent.every((item) => input.includes(item))) {
+				matchedRules.push({
+					antecedent,
+					consequent,
+					confidence,
+					support,
+				});
+			}
 		}
-	});
+	);
 
 	return matchedRules;
 }
